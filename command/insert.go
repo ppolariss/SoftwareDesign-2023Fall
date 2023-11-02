@@ -3,7 +3,7 @@ package command
 import (
 	e "design/myError"
 	"design/tree"
-	"fmt"
+	// "fmt"
 	"strconv"
 	"strings"
 )
@@ -14,21 +14,32 @@ type insert struct {
 	content  string
 }
 
-func (c *insert) Execute() error {
-	fmt.Println("insert")
+func (c *insert) Execute() (Command, error) {
+	// fmt.Println("insert")
 	// return nil
 	if c.line_num == -1 {
 		n, _, err := tree.ParseNode(c.content)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		return tree.Append_tail(n)
+		num, err := tree.Append_tail(n)
+		if err != nil {
+			return nil, err
+		}
+		delete := &delete{line_num: num}
+		return delete, err
 	} else {
 		n, _, err := tree.ParseNode(c.content)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		return tree.Insert(c.line_num, n)
+		// println(c.line_num)
+		num, err := tree.Insert(c.line_num, n)
+		if err != nil {
+			return nil, err
+		}
+		delete := &delete{line_num: num}
+		return delete, err
 	}
 }
 
@@ -45,10 +56,11 @@ func (c *insert) SetArgs(args []string) error {
 			c.line_num = -1
 			slice_args := args[1:]
 			c.content = strings.Join(slice_args, " ")
+			return nil
 		}
 		// The line number is specified
 		// 要得到一个最大整数
-		if num < 0 || num > 10000 {
+		if num <= 0 || num > tree.Length+1 {
 			return e.NewMyError("insert: line number error")
 		}
 		c.line_num = num
@@ -58,20 +70,33 @@ func (c *insert) SetArgs(args []string) error {
 	return nil
 }
 
+func (c *insert) CallSelf() string {
+	retStr := "insert"
+	if c.line_num > 0 {
+		retStr += " " + strconv.Itoa(c.line_num)
+	}
+	retStr += " " + c.content
+	return retStr
+}
 
 type append_head struct {
 	content string
 }
 
-func (c *append_head) Execute() error {
+func (c *append_head) Execute() (Command, error) {
 	// 是否会破坏文本结构
 	// 如果破坏，在哪里报错
-	fmt.Println("append_head")
+	// fmt.Println("append_head")
 	n, _, err := tree.ParseNode(c.content)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return tree.Append_head(n)
+	num, err := tree.Append_head(n)
+	if err != nil {
+		return nil, err
+	}
+	delete := &delete{line_num: num}
+	return delete, err
 	// return nil
 }
 
@@ -84,18 +109,28 @@ func (c *append_head) SetArgs(args []string) error {
 	return nil
 }
 
+func (c *append_head) CallSelf() string {
+	retStr := "append-head"
+	retStr += " " + c.content
+	return retStr
+}
 
 type append_tail struct {
 	content string
 }
 
-func (c *append_tail) Execute() error {
-	fmt.Println("append_tail")
+func (c *append_tail) Execute() (Command, error) {
+	// fmt.Println("append_tail")
 	n, _, err := tree.ParseNode(c.content)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return tree.Append_tail(n)
+	num, err := tree.Append_tail(n)
+	if err != nil {
+		return nil, err
+	}
+	delete := &delete{line_num: num}
+	return delete, err
 }
 
 func (c *append_tail) SetArgs(args []string) error {
@@ -105,4 +140,10 @@ func (c *append_tail) SetArgs(args []string) error {
 	slice_args := args[1:]
 	c.content = strings.Join(slice_args, " ")
 	return nil
+}
+
+func (c *append_tail) CallSelf() string {
+	retStr := "append-tail"
+	retStr += " " + c.content
+	return retStr
 }

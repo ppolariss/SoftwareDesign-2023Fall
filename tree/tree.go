@@ -3,7 +3,6 @@ package tree
 import (
 	// "path/filepath"
 	e "design/myError"
-	"strings"
 	"sync"
 )
 
@@ -19,6 +18,7 @@ var file_path string
 var Length int
 var root *Node
 var once sync.Once
+var fileContent []string
 
 //  = &Node{content: "root", children: []*Node{}, parent: nil}
 
@@ -27,6 +27,15 @@ func Load(path string) error {
 	var err error
 	Length, err = parseFromFile(path)
 	return err
+}
+
+func updateLength(num int) int {
+	if num != 0 {
+		Length += num
+	} else {
+		Length = len(fileContent)
+	}
+	return Length
 }
 
 func IsInit() bool {
@@ -66,19 +75,7 @@ func GetGrade(content string) int {
 	}
 }
 
-// parse a line to a node,
-// return the node and the number of # if valid
-func ParseNode(content string) (*Node, int, error) {
-	content = strings.TrimRight(content, "\n")
-	grade := GetGrade(content)
-	// remove the # and space
-	if grade > 0 {
-		content = content[grade+1:]
-	}
-	node := Node{content: content, children: []*Node{}, parent: nil, grade: grade}
-	return &node, grade, nil
-}
-
+// return 0~len-2,-1
 func getRankofParent(node *Node) (int, error) {
 	if node.parent == nil {
 		return 0, e.NewMyError("getRankofParent(): node.parent == nil")
@@ -94,26 +91,47 @@ func getRankofParent(node *Node) (int, error) {
 	return 0, e.NewMyError("getRankofParent(): node.parent.children not found")
 }
 
-func recurGetNodeByContent(content string, node *Node) *Node {
-	if node.content == content {
-		return node
+// para content to find, node to start, nth
+// return nth and node
+func recurGetNodeByContent(content string, node *Node, nth int) (int, *Node) {
+	if transNum(node.content) == content {
+		return nth, node
 	}
 	for _, child := range node.children {
-		retNode := recurGetNodeByContent(content, child)
+		nth++
+		nth, retNode := recurGetNodeByContent(content, child, nth)
 		if retNode != nil {
-			return retNode
+			return nth, retNode
 		}
 	}
-	return nil
+	return 0, nil
 }
 
-func getNodeByContent(content string) (*Node) {
+// return nth and node
+func getNodeByContent(content string) (int, *Node) {
 	root := GetRoot()
 	for _, child := range root.children {
-		retNode := recurGetNodeByContent(content, child)
+		nth, retNode := recurGetNodeByContent(content, child, 1)
 		if retNode != nil {
-			return retNode
+			return nth, retNode
 		}
 	}
-	return nil
+	return 0, nil
+}
+
+func (node *Node) next() *Node {
+	if node.children != nil && len(node.children) != 0 {
+		return node.children[0]
+	}
+	for {
+		rank, err := getRankofParent(node)
+		if err != nil {
+			return nil
+		}
+		if rank == -1 {
+			node = node.parent
+		} else {
+			return node.parent.children[rank+1]
+		}
+	}
 }

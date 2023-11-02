@@ -3,7 +3,7 @@ package tree
 import (
 	"bufio"
 	e "design/myError"
-	"fmt"
+	// "fmt"
 	"os"
 	// "github.com/elastic/go-elasticsearch/v8/typedapi/ilm/retry"
 )
@@ -15,11 +15,14 @@ func traceback(currentNode *Node, newNode *Node) error {
 		return e.NewMyError("traceback(): currentNode == nil || newNode == nil")
 	}
 	// level down
-	if newNode.grade == 0 || newNode.grade == currentNode.grade+1 {
+	if (newNode.grade == 0 || newNode.grade > currentNode.grade) && currentNode.grade != 0 {
 		newNode.parent = currentNode
 		currentNode.children = append(currentNode.children, newNode)
-	} else if currentNode.grade < newNode.grade {
-		return e.NewMyError("traceback(): incorrect syntax")
+		// if newNode.grade == 0 || newNode.grade == currentNode.grade+1 {
+		// 	newNode.parent = currentNode
+		// 	currentNode.children = append(currentNode.children, newNode)
+		// } else if currentNode.grade < newNode.grade {
+		// 	return e.NewMyError("traceback(): incorrect syntax")
 	} else {
 		// OutputAsFile(0)
 
@@ -33,7 +36,7 @@ func traceback(currentNode *Node, newNode *Node) error {
 		}
 		newNode.parent = currentNode
 		currentNode.children = append(currentNode.children, newNode)
-		fmt.Println(currentNode.content)
+		// fmt.Println(currentNode.content)
 	}
 	return nil
 }
@@ -82,6 +85,7 @@ func parseFromFile(file_path string) (int, error) {
 		// }
 		count++
 
+		fileContent = append(fileContent, content)
 		node, grade, err := ParseNode(content)
 		if err != nil {
 			return count, e.NewMyError(err.Error())
@@ -89,7 +93,8 @@ func parseFromFile(file_path string) (int, error) {
 
 		err = traceback(current, node)
 		if err != nil {
-			fmt.Println(err.Error())
+			return count, e.NewMyError(err.Error())
+			// fmt.Println(err.Error())
 		}
 
 		if grade != 0 {
@@ -100,6 +105,6 @@ func parseFromFile(file_path string) (int, error) {
 		}
 	}
 	// Dump()
-	fmt.Println("parseFromFile() success")
+	// fmt.Println("parseFromFile() success")
 	return count, nil
 }

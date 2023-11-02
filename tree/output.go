@@ -129,7 +129,7 @@ func OutputAsDir(content string) error {
 		return e.NewMyError("OutputAsDir(): No file in workspace")
 	}
 
-	node := getNodeByContent(content)
+	_, node := getNodeByContent(content)
 	if node == nil {
 		return e.NewMyError("OutputAsDir(): No such node")
 	}

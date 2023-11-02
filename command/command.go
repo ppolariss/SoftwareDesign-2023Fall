@@ -6,17 +6,31 @@ import (
 	e "design/myError"
 	"fmt"
 	"os"
-	// "strconv"
+	"reflect"
+
+	"design/util"
 	"strings"
-	// "golang.org/x/exp/slices"
+	"sync"
 )
 
 type Command interface {
 	SetArgs([]string) error
-	Execute() error
+	Execute() (Command, error)
+	CallSelf() string
+}
+type Command_history struct {
+	command         Command
+	reverse_command Command
+}
+type file_history struct {
+	file_name string
+	createAt  string
 }
 
 var commands_mapper map[string]Command
+var commands_history []Command_history
+var cur_file file_history
+var once sync.Once
 
 func init() {
 	commands_mapper = make(map[string]Command)
@@ -44,10 +58,21 @@ func Do() error {
 		// panic("")
 		return err
 	}
-	err = command.Execute()
+	reverseCommand, err := command.Execute()
 	if err != nil {
 		fmt.Println(err)
 		return err
+	}
+	err = log(command, reverseCommand)
+	if err != nil {
+		return err
+	}
+	// logFile when save
+	if reflect.TypeOf(command).Elem().Name() == "save" {
+		err = logFile()
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -84,4 +109,43 @@ func ReadCommand() (Command, error) {
 		return nil, err
 	}
 	return command, nil
+}
+
+func log(command Command, reverseCommand Command) error {
+	f, err := os.OpenFile("./log/log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		return e.NewMyError("open log error")
+	}
+	defer f.Close()
+
+	once.Do(func() {
+		util.Output("session start at "+util.GetNow()+"\n", f)
+	})
+
+	util.Output(util.GetNow()+" "+command.CallSelf()+"\n", f)
+	name := reflect.TypeOf(command).Elem().Name()
+	if reverseCommand != nil || name == "save" || name == "load" {
+		undo_history = nil
+		commands_history = append(commands_history, Command_history{command: command, reverse_command: reverseCommand})
+	} 
+	return nil
+
+}
+
+func logFile() error {
+	interval, err := util.GetInterval(util.GetNow(), cur_file.createAt)
+	if err != nil {
+		return err
+	}
+	f, err := os.OpenFile("./log/logFile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		return err
+	}
+
+	once.Do(func() {
+		f.Truncate(0)
+		util.Output("session start at "+cur_file.createAt+"\n", f)
+	})
+	util.Output(cur_file.file_name+" "+interval+"\n", f)
+	return nil
 }
