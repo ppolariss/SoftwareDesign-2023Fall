@@ -1,14 +1,12 @@
 package util
 
 import (
-	// "bufio"
 	"bufio"
 	e "design/myError"
 	"fmt"
 	"os"
 	"strings"
 	"time"
-	// "github.com/go-delve/delve/pkg/dwarf/reader"
 )
 
 func Output(content string, file *os.File) error {
@@ -23,6 +21,7 @@ func Output(content string, file *os.File) error {
 	return nil
 }
 
+// get []string from file
 func ReadStrings(file *os.File) ([]string, error) {
 	var result []string
 	reader := bufio.NewReader(file)
@@ -85,8 +84,6 @@ func GetInterval(nowTime string, createTime string) (string, error) {
 		retStr = "0秒"
 	}
 	return retStr, nil
-
-	// return Unix2Time(interval), nil
 }
 
 const formatStr = "20060102 15:04:05"
@@ -94,50 +91,3 @@ const formatStr = "20060102 15:04:05"
 func GetNow() string {
 	return time.Now().Format(formatStr)
 }
-
-// func tree() {
-// 	// ├── 新的标题
-// 	// └── 我的书签
-// 	// 	└── 学习资源
-// 	// 		├── 新的⼦标题
-// 	// 		└── 编程
-// 	// 			└── ·新的⽂本
-// }
-
-// func main() {
-// 	write()
-
-// 	var path string = "test.txt"
-// 	file, err := os.Open(path)
-// 	defer file.Close()
-// 	if err != nil {
-// 		file, _ = os.Create(path)
-// 	}
-// 	// bufio ioutil
-// 	reader := bufio.NewReader(file)
-// 	content, err := reader.ReadString('\n')
-// 	if err != nil {
-// 		// panic(err)
-// 		fmt.Println(err)
-// 	}
-// 	fmt.Println(content)
-
-// }
-
-// // 时间转化
-// // 树结构输出
-
-// func write() {
-// 	file_path := "test.txt"
-
-// 	file, err := os.OpenFile(file_path, os.O_APPEND|os.O_WRONLY, 0644)
-// 	if err != nil {
-// 		panic(err)
-// 		// log.Fatal(err)
-// 	}
-// 	defer file.Close()
-
-// 	if _, err := file.WriteString("This is some extra text."); err != nil {
-// 		panic(err)
-// 	}
-// }

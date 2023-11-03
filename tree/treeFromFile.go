@@ -3,14 +3,22 @@ package tree
 import (
 	"bufio"
 	e "design/myError"
-	// "fmt"
 	"os"
-	// "github.com/elastic/go-elasticsearch/v8/typedapi/ilm/retry"
 )
 
 // when adding a new node, the position of the node is determined by the current node and the grade,
 // only used when append
 func traceback(currentNode *Node, newNode *Node) error {
+	// if currentNode.grade == 0 {
+	// 	for {
+	// 		currentNode = currentNode.parent
+	// 		if currentNode == nil {
+	// 			return e.NewMyError("traceback(): currentNode.parent == nil")
+	// 		} else {
+	// 			break
+	// 		}
+	// 	}
+	// }
 	if currentNode == nil || newNode == nil {
 		return e.NewMyError("traceback(): currentNode == nil || newNode == nil")
 	}
@@ -50,16 +58,8 @@ func parseFromFile(file_path string) (int, error) {
 	}
 
 	file, err := os.OpenFile(file_path, os.O_RDONLY|os.O_CREATE, 0644)
-	// fmt.Println("parseFromFile() start" + file_path)
-	// fmt.Println(err)
 	if err != nil {
-		// if err.Error() != "no such file or directory" {
-		// 	file, _ = os.Create(file_path)
-		// 	file.Close()
-		// 	return nil
-		// } else {
 		return 0, e.NewMyError(err.Error())
-		// }
 	}
 	defer file.Close()
 
@@ -94,7 +94,6 @@ func parseFromFile(file_path string) (int, error) {
 		err = traceback(current, node)
 		if err != nil {
 			return count, e.NewMyError(err.Error())
-			// fmt.Println(err.Error())
 		}
 
 		if grade != 0 {
@@ -105,6 +104,5 @@ func parseFromFile(file_path string) (int, error) {
 		}
 	}
 	// Dump()
-	// fmt.Println("parseFromFile() success")
 	return count, nil
 }

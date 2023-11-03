@@ -1,12 +1,9 @@
 package tree
 
 import (
-	// "path/filepath"
 	e "design/myError"
 	"sync"
 )
-
-// 要不要改大写
 type Node struct {
 	content  string
 	children []*Node
@@ -20,7 +17,6 @@ var root *Node
 var once sync.Once
 var fileContent []string
 
-//  = &Node{content: "root", children: []*Node{}, parent: nil}
 
 func Load(path string) error {
 	file_path = path

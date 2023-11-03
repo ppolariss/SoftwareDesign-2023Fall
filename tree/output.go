@@ -5,14 +5,8 @@ import (
 	"design/util"
 	"fmt"
 	"os"
-	// "github.com/elastic/go-elasticsearch/v8/typedapi/ilm/retry"
 )
 
-// type node struct {
-// 	content  string
-// 	children []*node
-// 	parent   *node
-// }
 const endBranch = "└── "
 const branch = "├── "
 const space = "    "

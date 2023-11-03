@@ -15,8 +15,6 @@ type insert struct {
 }
 
 func (c *insert) Execute() (Command, error) {
-	// fmt.Println("insert")
-	// return nil
 	if c.line_num == -1 {
 		n, _, err := tree.ParseNode(c.content)
 		if err != nil {
@@ -86,7 +84,6 @@ type append_head struct {
 func (c *append_head) Execute() (Command, error) {
 	// 是否会破坏文本结构
 	// 如果破坏，在哪里报错
-	// fmt.Println("append_head")
 	n, _, err := tree.ParseNode(c.content)
 	if err != nil {
 		return nil, err
@@ -97,7 +94,6 @@ func (c *append_head) Execute() (Command, error) {
 	}
 	delete := &delete{line_num: num}
 	return delete, err
-	// return nil
 }
 
 func (c *append_head) SetArgs(args []string) error {
@@ -120,7 +116,6 @@ type append_tail struct {
 }
 
 func (c *append_tail) Execute() (Command, error) {
-	// fmt.Println("append_tail")
 	n, _, err := tree.ParseNode(c.content)
 	if err != nil {
 		return nil, err

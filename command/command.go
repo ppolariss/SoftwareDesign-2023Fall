@@ -1,10 +1,8 @@
 package command
 
 import (
-	// "context"
 	"bufio"
 	e "design/myError"
-	"fmt"
 	"os"
 	"reflect"
 
@@ -18,17 +16,13 @@ type Command interface {
 	Execute() (Command, error)
 	CallSelf() string
 }
-type Command_history struct {
-	command         Command
-	reverse_command Command
-}
+
 type file_history struct {
 	file_name string
 	createAt  string
 }
 
 var commands_mapper map[string]Command
-var commands_history []Command_history
 var cur_file file_history
 var once sync.Once
 
@@ -49,39 +43,37 @@ func init() {
 	commands_mapper["stats"] = &stats{}
 }
 
+// must get input outside
 func Do() error {
-	// for{}
-	command, err := ReadCommand()
-	if err != nil || command == nil {
-		// if(str!="exit")
-		fmt.Println(err)
-		// panic("")
-		return err
-	}
-	reverseCommand, err := command.Execute()
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = log(command, reverseCommand)
-	if err != nil {
-		return err
-	}
-	// logFile when save
-	if reflect.TypeOf(command).Elem().Name() == "save" {
-		err = logFile()
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Split(bufio.ScanLines)
+
+	for scanner.Scan() {
+		command, err := ReadCommand(scanner)
+		if err != nil || command == nil {
+			// if(str!="exit")
+			return err
+		}
+		reverseCommand, err := command.Execute()
 		if err != nil {
 			return err
+		}
+		err = log(command, reverseCommand)
+		if err != nil {
+			return err
+		}
+		// logFile when save
+		if reflect.TypeOf(command).Elem().Name() == "save" {
+			err = logFile()
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil
 }
 
-func ReadCommand() (Command, error) {
-	// get input
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Split(bufio.ScanLines)
-	scanner.Scan()
+func ReadCommand(scanner *bufio.Scanner) (Command, error) {
 	line := scanner.Text()
 	if err := scanner.Err(); err != nil {
 		return nil, e.NewMyError("Input error")
@@ -127,7 +119,7 @@ func log(command Command, reverseCommand Command) error {
 	if reverseCommand != nil || name == "save" || name == "load" {
 		undo_history = nil
 		commands_history = append(commands_history, Command_history{command: command, reverse_command: reverseCommand})
-	} 
+	}
 	return nil
 
 }

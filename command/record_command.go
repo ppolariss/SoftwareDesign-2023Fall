@@ -6,65 +6,9 @@ import (
 	"os"
 
 	"design/util"
-	"reflect"
 	"strconv"
 )
 
-var undo_history *Command_history
-
-type undo struct{}
-
-func (c *undo) Execute() (Command, error) {
-	ch := next()
-	if ch == nil {
-		return nil, nil
-	}
-	command, err := ch.reverse_command.Execute()
-	if err != nil {
-		return nil, err
-	}
-	undo_history = &Command_history{command: c, reverse_command: command}
-	return nil, nil
-	// 因为只有redo会检测undo所以希望undo不进入next
-}
-func (c *undo) SetArgs(args []string) error {
-	if len(args) != 1 {
-		return e.NewMyError("undo: args error")
-	}
-	return nil
-}
-
-func (c *undo) CallSelf() string {
-	return "undo"
-}
-
-type redo struct{}
-
-func (c *redo) Execute() (Command, error) {
-	if undo_history == nil {
-		return nil, nil
-	}
-	if reflect.TypeOf(undo_history.command).Elem().Name() != "undo" {
-		return nil, nil
-	}
-	command, err := undo_history.reverse_command.Execute()
-	if err != nil {
-		return nil, err
-	}
-	undo_history = nil
-	return command, nil
-}
-
-func (c *redo) SetArgs(args []string) error {
-	if len(args) != 1 {
-		return e.NewMyError("redo: args error")
-	}
-	return nil
-}
-
-func (c *redo) CallSelf() string {
-	return "redo"
-}
 
 type history struct {
 	// default -1
@@ -168,31 +112,4 @@ func (c *stats) SetArgs(args []string) error {
 
 func (c *stats) CallSelf() string {
 	return "stats" + " " + c.status
-}
-
-func next() *Command_history {
-	pointer := len(commands_history) - 1
-	// delete after undo
-	// insert after redo
-	// simulate stack
-	for {
-		if pointer < 0 {
-			// !!!!!!!!! condition isn't equal 0
-			return nil
-		}
-		c := commands_history[pointer]
-
-		if c.reverse_command == nil {
-			name := reflect.TypeOf(c.command).Elem().Name()
-			if name == "save" || name == "load" {
-				return nil
-			}
-			pointer--
-			commands_history = commands_history[:pointer+1]
-			continue
-		}
-
-		commands_history = commands_history[:pointer]
-		return &c
-	}
 }
