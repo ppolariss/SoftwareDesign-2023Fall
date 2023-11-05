@@ -17,33 +17,38 @@ type Command interface {
 	CallSelf() string
 }
 
-type file_history struct {
-	file_name string
-	createAt  string
+type UndoableCommand interface {
+	Command
+	UndoExecute()
 }
 
-var commands_mapper map[string]Command
-var cur_file file_history
+type fileHistory struct {
+	fileName string
+	createAt string
+}
+
+var commandsMapper map[string]Command
+var curFile fileHistory
 var once sync.Once
 
 func init() {
-	commands_mapper = make(map[string]Command)
-	commands_mapper["load"] = &load{}
-	commands_mapper["save"] = &save{}
-	commands_mapper["insert"] = &insert{}
-	commands_mapper["delete"] = &delete{}
-	commands_mapper["append-head"] = &append_head{}
-	commands_mapper["append-tail"] = &append_tail{}
-	commands_mapper["undo"] = &undo{}
-	commands_mapper["redo"] = &redo{}
-	commands_mapper["list"] = &list{}
-	commands_mapper["list-tree"] = &list_tree{}
-	commands_mapper["dir-tree"] = &dir_tree{}
-	commands_mapper["history"] = &history{}
-	commands_mapper["stats"] = &stats{}
+	commandsMapper = make(map[string]Command)
+	commandsMapper["load"] = &load{}
+	commandsMapper["save"] = &save{}
+	commandsMapper["insert"] = &insert{}
+	commandsMapper["delete"] = &deleteCommand{}
+	commandsMapper["append-head"] = &appendHead{}
+	commandsMapper["append-tail"] = &appendTail{}
+	commandsMapper["undo"] = &undo{}
+	commandsMapper["redo"] = &redo{}
+	commandsMapper["list"] = &list{}
+	commandsMapper["list-tree"] = &listTree{}
+	commandsMapper["dir-tree"] = &dirTree{}
+	commandsMapper["history"] = &history{}
+	commandsMapper["stats"] = &stats{}
 }
 
-// must get input outside
+// Do must get input outside
 func Do() error {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Split(bufio.ScanLines)
@@ -79,9 +84,9 @@ func ReadCommand(scanner *bufio.Scanner) (Command, error) {
 		return nil, e.NewMyError("Input error")
 	}
 	// parse input to args
-	split_strings := strings.Split(line, " ")
+	splitStrings := strings.Split(line, " ")
 	args := make([]string, 0)
-	for _, str := range split_strings {
+	for _, str := range splitStrings {
 		if str != "" {
 			args = append(args, str)
 		}
@@ -92,7 +97,7 @@ func ReadCommand(scanner *bufio.Scanner) (Command, error) {
 		return nil, e.NewMyError("Null input")
 	}
 	// get command
-	command := commands_mapper[args[0]]
+	command := commandsMapper[args[0]]
 	if command == nil {
 		return nil, e.NewMyError("invalid command")
 	}
@@ -104,28 +109,31 @@ func ReadCommand(scanner *bufio.Scanner) (Command, error) {
 }
 
 func log(command Command, reverseCommand Command) error {
+	// global variable of logger
 	f, err := os.OpenFile("./log/log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		return e.NewMyError("open log error")
 	}
-	defer f.Close()
+	defer func() {
+		_ = f.Close()
+	}()
 
 	once.Do(func() {
-		util.Output("session start at "+util.GetNow()+"\n", f)
+		_ = util.Output("session start at "+util.GetNow()+"\n", f)
 	})
 
-	util.Output(util.GetNow()+" "+command.CallSelf()+"\n", f)
+	_ = util.Output(util.GetNow()+" "+command.CallSelf()+"\n", f)
 	name := reflect.TypeOf(command).Elem().Name()
 	if reverseCommand != nil || name == "save" || name == "load" {
-		undo_history = nil
-		commands_history = append(commands_history, Command_history{command: command, reverse_command: reverseCommand})
+		undoHistory = nil
+		commandsHistory = append(commandsHistory, History{command: command, reverseCommand: reverseCommand})
 	}
 	return nil
 
 }
 
 func logFile() error {
-	interval, err := util.GetInterval(util.GetNow(), cur_file.createAt)
+	interval, err := util.GetInterval(util.GetNow(), curFile.createAt)
 	if err != nil {
 		return err
 	}
@@ -135,9 +143,9 @@ func logFile() error {
 	}
 
 	once.Do(func() {
-		f.Truncate(0)
-		util.Output("session start at "+cur_file.createAt+"\n", f)
+		_ = f.Truncate(0)
+		_ = util.Output("session start at "+curFile.createAt+"\n", f)
 	})
-	util.Output(cur_file.file_name+" "+interval+"\n", f)
+	_ = util.Output(curFile.fileName+" "+interval+"\n", f)
 	return nil
 }

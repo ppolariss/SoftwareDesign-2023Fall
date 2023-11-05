@@ -4,6 +4,7 @@ import (
 	e "design/myError"
 	"sync"
 )
+
 type Node struct {
 	content  string
 	children []*Node
@@ -11,15 +12,14 @@ type Node struct {
 	grade    int
 }
 
-var file_path string
+var filePath string
 var Length int
 var root *Node
 var once sync.Once
 var fileContent []string
 
-
 func Load(path string) error {
-	file_path = path
+	filePath = path
 	var err error
 	Length, err = parseFromFile(path)
 	return err
@@ -35,11 +35,7 @@ func updateLength(num int) int {
 }
 
 func IsInit() bool {
-	if file_path == "" {
-		return false
-	} else {
-		return true
-	}
+	return filePath != ""
 }
 
 func GetRoot() *Node {
@@ -50,14 +46,10 @@ func GetRoot() *Node {
 }
 
 func IsEmpty() bool {
-	if GetRoot().children == nil || len(GetRoot().children) == 0 {
-		return true
-	} else {
-		return false
-	}
+	return len(GetRoot().children) == 0
 }
 
-// return the number of # if valid
+// GetGrade return the number of # if valid
 func GetGrade(content string) int {
 	i := 0
 	for {

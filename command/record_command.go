@@ -9,7 +9,6 @@ import (
 	"strconv"
 )
 
-
 type history struct {
 	// default -1
 	num int
@@ -20,8 +19,10 @@ func (c *history) Execute() (Command, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
-	temp_history, err := util.ReadStrings(f)
+	defer func(f *os.File) {
+		_ = f.Close()
+	}(f)
+	tempHistory, err := util.ReadStrings(f)
 	if err != nil {
 		return nil, err
 	}
@@ -29,13 +30,13 @@ func (c *history) Execute() (Command, error) {
 	var count int
 	if c.num == -1 {
 		// count = len(commands_history)
-		count = len(temp_history)
+		count = len(tempHistory)
 	} else {
 		count = c.num
 	}
 
-	for i := len(temp_history); i > 0 && count > 0; i-- {
-		fmt.Println(temp_history[i-1])
+	for i := len(tempHistory); i > 0 && count > 0; i-- {
+		fmt.Println(tempHistory[i-1])
 		count--
 	}
 
@@ -73,23 +74,25 @@ type stats struct {
 
 func (c *stats) Execute() (Command, error) {
 	if c.status == "current" {
-		interval, err := util.GetInterval(util.GetNow(), cur_file.createAt)
+		interval, err := util.GetInterval(util.GetNow(), curFile.createAt)
 		if err != nil {
 			return nil, err
 		}
-		fmt.Println(cur_file.file_name + " " + interval)
+		fmt.Println(curFile.fileName + " " + interval)
 		return nil, nil
 	}
 	f, err := os.OpenFile("./log/logFile", os.O_RDWR, 0644)
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
-	temp_history, err := util.ReadStrings(f)
+	defer func(f *os.File) {
+		_ = f.Close()
+	}(f)
+	tempHistory, err := util.ReadStrings(f)
 	if err != nil {
 		return nil, err
 	}
-	for _, v := range temp_history {
+	for _, v := range tempHistory {
 		fmt.Println(v)
 	}
 	return nil, nil

@@ -33,20 +33,20 @@ func Dump() {
 func recurOutputAsFile(node *Node, file *os.File) {
 	if node.grade != 0 {
 		for i := 0; i < node.grade; i++ {
-			util.Output("#", file)
-			
+			_ = util.Output("#", file)
+
 		}
-		util.Output(" ", file)
-		
+		_ = util.Output(" ", file)
+
 	}
-	
-	util.Output(node.content+"\n", file)
+
+	_ = util.Output(node.content+"\n", file)
 	for _, child := range node.children {
 		recurOutputAsFile(child, file)
 	}
 }
 
-// para: 0: output to terminal; 1: output to file
+// OutputAsFile para: 0: output to terminal; 1: output to file
 func OutputAsFile(para int) error {
 	if !IsInit() {
 		return e.NewMyError("OutputAsFile(): No file in workspace")
@@ -55,7 +55,7 @@ func OutputAsFile(para int) error {
 	tree := GetRoot()
 	if para != 0 {
 		// 向文件输入
-		file, err := os.OpenFile(file_path, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
+		file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
 		if err != nil {
 			return e.NewMyError(err.Error())
 		}
@@ -69,7 +69,9 @@ func OutputAsFile(para int) error {
 		for _, child := range tree.children {
 			recurOutputAsFile(child, file)
 		}
-		defer file.Close()
+		defer func(file *os.File) {
+			_ = file.Close()
+		}(file)
 	} else {
 		// 向终端输入
 		for _, child := range tree.children {
@@ -116,7 +118,6 @@ func OutputAsTree() error {
 	}
 	return nil
 }
-
 
 func OutputAsDir(content string) error {
 	if !IsInit() {

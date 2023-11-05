@@ -6,26 +6,25 @@ import (
 	// "fmt"
 	"strconv"
 	"strings"
-	
 )
 
-type delete struct {
-	line_num int
-	content  string //node.content
+type deleteCommand struct {
+	lineNum int
+	content string //node.content
 }
 
-func (c *delete) Execute() (Command, error) {
-	nth, content, err := tree.Delete(c.line_num, c.content)
+func (c *deleteCommand) Execute() (Command, error) {
+	nth, content, err := tree.Delete(c.lineNum, c.content)
 	if err != nil {
 		return nil, err
 	}
-	insert := &insert{line_num: nth, content: content}
+	insert := &insert{lineNum: nth, content: content}
 	return insert, nil
 	// 删除指定标题或⽂本。如果指定⾏号，则删除指定⾏。当删除的是标题时，其⼦标题
 	// 和内容不会被删除。
 }
 
-func (c *delete) SetArgs(args []string) error {
+func (c *deleteCommand) SetArgs(args []string) error {
 	if len(args) < 2 {
 		return e.NewMyError("delete: args error")
 	}
@@ -37,24 +36,24 @@ func (c *delete) SetArgs(args []string) error {
 			if num > tree.Length {
 				return e.NewMyError("delete: line number error")
 			}
-			c.line_num = num
+			c.lineNum = num
 			c.content = ""
 			return nil
 		}
 	}
 
 	// The line number is not specified
-	c.line_num = 0
-	slice_args := args[1:]
-	c.content = strings.Join(slice_args, " ")
+	c.lineNum = 0
+	sliceArgs := args[1:]
+	c.content = strings.Join(sliceArgs, " ")
 
 	return nil
 }
 
-func (c *delete) CallSelf() string {
+func (c *deleteCommand) CallSelf() string {
 	retStr := "delete"
-	if c.line_num > 0  {
-		retStr += " " + strconv.Itoa(c.line_num)
+	if c.lineNum > 0 {
+		retStr += " " + strconv.Itoa(c.lineNum)
 	} else {
 		retStr += " " + c.content
 	}

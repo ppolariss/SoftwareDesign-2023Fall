@@ -19,8 +19,8 @@ func (c *load) Execute() (Command, error) {
 		c.filepath = "./file/" + c.filepath
 	}
 
-	cur_file.file_name = c.filepath
-	cur_file.createAt = util.GetNow()
+	curFile.fileName = c.filepath
+	curFile.createAt = util.GetNow()
 	return nil, tree.Load(c.filepath)
 }
 

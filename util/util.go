@@ -21,7 +21,7 @@ func Output(content string, file *os.File) error {
 	return nil
 }
 
-// get []string from file
+// ReadStrings get []string from file
 func ReadStrings(file *os.File) ([]string, error) {
 	var result []string
 	reader := bufio.NewReader(file)

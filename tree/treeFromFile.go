@@ -51,21 +51,23 @@ func traceback(currentNode *Node, newNode *Node) error {
 
 // parse a new file to a tree
 // return the length and error
-func parseFromFile(file_path string) (int, error) {
+func parseFromFile(filePath string) (int, error) {
 	root := GetRoot()
 	if root.children != nil {
 		root.children = []*Node{}
 	}
 
-	file, err := os.OpenFile(file_path, os.O_RDONLY|os.O_CREATE, 0644)
+	file, err := os.OpenFile(filePath, os.O_RDONLY|os.O_CREATE, 0644)
 	if err != nil {
 		return 0, e.NewMyError(err.Error())
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		_ = file.Close()
+	}(file)
 
 	current := root
 	reader := bufio.NewReader(file)
-	return_flag := false
+	returnFlag := false
 	count := 0
 	for {
 		content, err := reader.ReadString('\n')
@@ -74,7 +76,7 @@ func parseFromFile(file_path string) (int, error) {
 				if content == "" {
 					break
 				}
-				return_flag = true
+				returnFlag = true
 				// 注意此处还要处理最后一行
 			} else {
 				return count, e.NewMyError(err.Error())
@@ -99,7 +101,7 @@ func parseFromFile(file_path string) (int, error) {
 		if grade != 0 {
 			current = node
 		}
-		if return_flag {
+		if returnFlag {
 			break
 		}
 	}

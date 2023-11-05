@@ -25,26 +25,26 @@ func (c *list) CallSelf() string {
 	return "list"
 }
 
-type list_tree struct{}
+type listTree struct{}
 
-func (c *list_tree) Execute() (Command, error) {
+func (c *listTree) Execute() (Command, error) {
 	return nil, tree.OutputAsTree()
 }
-func (c *list_tree) SetArgs(args []string) error {
+func (c *listTree) SetArgs(args []string) error {
 	if len(args) != 1 {
 		return e.NewMyError("list_tree: args error")
 	}
 	return nil
 }
-func (c *list_tree) CallSelf() string {
+func (c *listTree) CallSelf() string {
 	return "list-tree"
 }
 
-type dir_tree struct {
+type dirTree struct {
 	directory string
 }
 
-func (c *dir_tree) Execute() (Command, error) {
+func (c *dirTree) Execute() (Command, error) {
 	if c.directory == "" {
 		return nil, tree.OutputAsTree()
 	} else {
@@ -52,13 +52,13 @@ func (c *dir_tree) Execute() (Command, error) {
 	}
 }
 
-func (c *dir_tree) SetArgs(args []string) error {
+func (c *dirTree) SetArgs(args []string) error {
 	if len(args) != 1 {
-		slice_args := args[1:]
-		c.directory = strings.Join(slice_args, " ")
+		sliceArgs := args[1:]
+		c.directory = strings.Join(sliceArgs, " ")
 	}
 	return nil
 }
-func (c *dir_tree) CallSelf() string {
+func (c *dirTree) CallSelf() string {
 	return "dir-tree"
 }

@@ -2,20 +2,22 @@ package tree
 
 import (
 	"fmt"
-	"testing"
 	"os"
+	"testing"
 )
 
 func TestParseFromFile(t *testing.T) {
 	// 相对位置 取决于运行所在
-	file_path := "../file/test_parse.txt"
+	filePath := "../file/test_parse.txt"
 	// os.Create(filepath)
 	// file, _ := os.OpenFile(filepath, os.O_APPEND|os.O_WRONLY, 0644)
 	// file.WriteString("# 我的资源\n## 程序设计\n### 软件设计\n#### 设计模式\n1. 观察者模式\n## 工具箱\n### Adobe")
 	// file.Close()
 
-	_, err:= parseFromFile(file_path)
-	defer os.Remove(file_path)
+	_, err := parseFromFile(filePath)
+	defer func(name string) {
+		_ = os.Remove(name)
+	}(filePath)
 	if err != nil {
 		panic(err)
 	}
