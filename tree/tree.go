@@ -13,7 +13,8 @@ type Node struct {
 }
 
 var filePath string
-var Length int
+
+// var Length int
 var root *Node
 var once sync.Once
 var fileContent []string
@@ -21,18 +22,18 @@ var fileContent []string
 func Load(path string) error {
 	filePath = path
 	var err error
-	Length, err = parseFromFile(path)
+	_, err = parseFromFile(path)
 	return err
 }
 
-func updateLength(num int) int {
-	if num != 0 {
-		Length += num
-	} else {
-		Length = len(fileContent)
-	}
-	return Length
-}
+//func updateLength(num int) int {
+//	if num != 0 {
+//		Length += num
+//	} else {
+//		Length = len(fileContent)
+//	}
+//	return Length
+//}
 
 func IsInit() bool {
 	return filePath != ""
@@ -51,6 +52,9 @@ func IsEmpty() bool {
 
 // GetGrade return the number of # if valid
 func GetGrade(content string) int {
+	if content == "" {
+		return 0
+	}
 	i := 0
 	for {
 		if content[i] == '#' {
@@ -122,4 +126,19 @@ func (node *Node) next() *Node {
 			return node.parent.children[rank+1]
 		}
 	}
+}
+
+// return lineNum according to content
+func matchContent(content string) (int, error) {
+	for i, v := range fileContent {
+		s := getBareContent(v)
+		if s == content {
+			return i + 1, nil
+		}
+	}
+	return 0, e.NewMyError("matchContent(): content not found")
+}
+
+func getLength() int {
+	return len(fileContent)
 }

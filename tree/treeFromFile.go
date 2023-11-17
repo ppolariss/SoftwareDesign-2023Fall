@@ -88,7 +88,7 @@ func parseFromFile(filePath string) (int, error) {
 		count++
 
 		fileContent = append(fileContent, content)
-		node, grade, err := ParseNode(content)
+		node, grade := ParseToNode(content)
 		if err != nil {
 			return count, e.NewMyError(err.Error())
 		}
@@ -106,5 +106,10 @@ func parseFromFile(filePath string) (int, error) {
 		}
 	}
 	// Dump()
+	// below is written at 2023/11/18
+	err = tree2string()
+	if err != nil {
+		return 0, err
+	}
 	return count, nil
 }

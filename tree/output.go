@@ -48,6 +48,10 @@ func recurOutputAsFile(node *Node, file *os.File) {
 
 // OutputAsFile para: 0: output to terminal; 1: output to file
 func OutputAsFile(para int) error {
+	err := string2tree()
+	if err != nil {
+		return err
+	}
 	if !IsInit() {
 		return e.NewMyError("OutputAsFile(): No file in workspace")
 	}
@@ -105,6 +109,10 @@ func recurOutputAsTree(prefix string, node *Node) error {
 }
 
 func OutputAsTree() error {
+	err := string2tree()
+	if err != nil {
+		return err
+	}
 	if !IsInit() {
 		return e.NewMyError("OutputAsTree(): No file in workspace")
 	}
@@ -120,6 +128,10 @@ func OutputAsTree() error {
 }
 
 func OutputAsDir(content string) error {
+	err := string2tree()
+	if err != nil {
+		return err
+	}
 	if !IsInit() {
 		return e.NewMyError("OutputAsDir(): No file in workspace")
 	}

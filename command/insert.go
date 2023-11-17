@@ -15,25 +15,28 @@ type insert struct {
 }
 
 func (c *insert) Execute() error {
-	if c.lineNum == -1 {
-		n, _, err := tree.ParseNode(c.content)
-		if err != nil {
-			return err
-		}
-		c.lineNum, err = tree.AppendTail(n)
-		if err != nil {
-			return err
-		}
-		return err
-	} else {
-		n, _, err := tree.ParseNode(c.content)
-		if err != nil {
-			return err
-		}
-		// println(c.line_num)
-		c.lineNum, err = tree.Insert(c.lineNum, n)
-		return err
-	}
+	//if c.lineNum == -1 {
+	//	n, _, err := tree.ParseToNode(c.content)
+	//	if err != nil {
+	//		return err
+	//	}
+	//	c.lineNum, err = tree.AppendTail(n)
+	//	if err != nil {
+	//		return err
+	//	}
+	//	return err
+	//} else {
+	//	//n, _, err := tree.ParseToNode(c.content)
+	//	//if err != nil {
+	//	//	return err
+	//	//}
+	//	//// println(c.line_num)
+	//	//err =
+	//	return tree.Insert(c.lineNum, c.content)
+	//}
+	var err error
+	c.lineNum, err = tree.Insert(c.lineNum, c.content)
+	return err
 }
 
 func (c *insert) SetArgs(args []string) error {
@@ -52,8 +55,9 @@ func (c *insert) SetArgs(args []string) error {
 			return nil
 		}
 		// The line number is specified
-		// 要得到一个最大整数
-		if num <= 0 || num > tree.Length+1 {
+		// in order not to couple the bottom
+		//|| num > tree.Length+1
+		if num <= 0 {
 			return e.NewMyError("insert: line number error")
 		}
 		c.lineNum = num
@@ -84,11 +88,11 @@ type appendHead struct {
 func (c *appendHead) Execute() error {
 	// 是否会破坏文本结构
 	// 如果破坏，在哪里报错
-	n, _, err := tree.ParseNode(c.content)
-	if err != nil {
-		return err
-	}
-	_, err = tree.AppendHead(n)
+	//n, _, err := tree.ParseToNode(c.content)
+	//if err != nil {
+	//	return err
+	//}
+	_, err := tree.Insert(1, c.content)
 	return err
 }
 
@@ -118,11 +122,14 @@ type appendTail struct {
 }
 
 func (c *appendTail) Execute() error {
-	n, _, err := tree.ParseNode(c.content)
-	if err != nil {
-		return err
-	}
-	c.lineNum, err = tree.AppendTail(n)
+	//n, _, err := tree.ParseToNode(c.content)
+	//if err != nil {
+	//	return err
+	//}
+	//c.lineNum, err = tree.AppendTail(n)
+	//return err
+	var err error
+	c.lineNum, err = tree.Insert(-1, c.content)
 	return err
 }
 

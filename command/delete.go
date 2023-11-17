@@ -33,9 +33,9 @@ func (c *deleteCommand) SetArgs(args []string) error {
 	if len(args) == 2 {
 		num, err := strconv.Atoi(args[1])
 		if err == nil && num > 0 {
-			if num > tree.Length {
-				return e.NewMyError("delete: line number error")
-			}
+			//if num > tree.Length {
+			//	return e.NewMyError("delete: line number error")
+			//}
 			c.lineNum = num
 			c.content = ""
 			return nil
