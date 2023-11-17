@@ -13,13 +13,13 @@ import (
 
 type Command interface {
 	SetArgs([]string) error
-	Execute() (Command, error)
+	Execute() error
 	CallSelf() string
 }
 
 type UndoableCommand interface {
 	Command
-	UndoExecute()
+	UndoExecute() error
 }
 
 type fileHistory struct {
@@ -59,14 +59,16 @@ func Do() error {
 			// if(str!="exit")
 			return err
 		}
-		reverseCommand, err := command.Execute()
+		err = command.Execute()
 		if err != nil {
 			return err
 		}
-		err = log(command, reverseCommand)
+		err = log(command)
 		if err != nil {
 			return err
 		}
+		updateCanUndoHistory(command)
+
 		// logFile when save
 		if reflect.TypeOf(command).Elem().Name() == "save" {
 			err = logFile()
@@ -75,6 +77,7 @@ func Do() error {
 			}
 		}
 	}
+	// 错误日志
 	return nil
 }
 
@@ -108,7 +111,7 @@ func ReadCommand(scanner *bufio.Scanner) (Command, error) {
 	return command, nil
 }
 
-func log(command Command, reverseCommand Command) error {
+func log(command Command) error {
 	// global variable of logger
 	f, err := os.OpenFile("./log/log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
@@ -123,13 +126,20 @@ func log(command Command, reverseCommand Command) error {
 	})
 
 	_ = util.Output(util.GetNow()+" "+command.CallSelf()+"\n", f)
-	name := reflect.TypeOf(command).Elem().Name()
-	if reverseCommand != nil || name == "save" || name == "load" {
-		undoHistory = nil
-		commandsHistory = append(commandsHistory, History{command: command, reverseCommand: reverseCommand})
-	}
 	return nil
+}
 
+func updateCanUndoHistory(command Command) {
+	name := reflect.TypeOf(command).Elem().Name()
+	if name == "save" || name == "load" {
+		canUnDoHistory = canUnDoHistory[:0]
+		canUnDoPointer = 0
+		return
+	}
+	if undoableCommand, ok := command.(UndoableCommand); ok {
+		canUnDoHistory = append(canUnDoHistory, undoableCommand)
+		canUnDoPointer = len(canUnDoHistory) - 1
+	}
 }
 
 func logFile() error {

@@ -14,30 +14,25 @@ type insert struct {
 	content string
 }
 
-func (c *insert) Execute() (Command, error) {
+func (c *insert) Execute() error {
 	if c.lineNum == -1 {
 		n, _, err := tree.ParseNode(c.content)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		num, err := tree.AppendTail(n)
+		c.lineNum, err = tree.AppendTail(n)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		deleteC := &deleteCommand{lineNum: num}
-		return deleteC, err
+		return err
 	} else {
 		n, _, err := tree.ParseNode(c.content)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		// println(c.line_num)
-		num, err := tree.Insert(c.lineNum, n)
-		if err != nil {
-			return nil, err
-		}
-		deleteC := &deleteCommand{lineNum: num}
-		return deleteC, err
+		c.lineNum, err = tree.Insert(c.lineNum, n)
+		return err
 	}
 }
 
@@ -77,23 +72,24 @@ func (c *insert) CallSelf() string {
 	return retStr
 }
 
+func (c *insert) UndoExecute() error {
+	command := deleteCommand{lineNum: c.lineNum, content: c.content}
+	return command.Execute()
+}
+
 type appendHead struct {
 	content string
 }
 
-func (c *appendHead) Execute() (Command, error) {
+func (c *appendHead) Execute() error {
 	// 是否会破坏文本结构
 	// 如果破坏，在哪里报错
 	n, _, err := tree.ParseNode(c.content)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	num, err := tree.AppendHead(n)
-	if err != nil {
-		return nil, err
-	}
-	deleteC := &deleteCommand{lineNum: num}
-	return deleteC, err
+	_, err = tree.AppendHead(n)
+	return err
 }
 
 func (c *appendHead) SetArgs(args []string) error {
@@ -111,21 +107,23 @@ func (c *appendHead) CallSelf() string {
 	return retStr
 }
 
+func (c *appendHead) UndoExecute() error {
+	command := deleteCommand{lineNum: 1, content: c.content}
+	return command.Execute()
+}
+
 type appendTail struct {
+	lineNum int
 	content string
 }
 
-func (c *appendTail) Execute() (Command, error) {
+func (c *appendTail) Execute() error {
 	n, _, err := tree.ParseNode(c.content)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	num, err := tree.AppendTail(n)
-	if err != nil {
-		return nil, err
-	}
-	deleteC := &deleteCommand{lineNum: num}
-	return deleteC, err
+	c.lineNum, err = tree.AppendTail(n)
+	return err
 }
 
 func (c *appendTail) SetArgs(args []string) error {
@@ -141,4 +139,9 @@ func (c *appendTail) CallSelf() string {
 	retStr := "append-tail"
 	retStr += " " + c.content
 	return retStr
+}
+
+func (c *appendTail) UndoExecute() error {
+	command := deleteCommand{lineNum: c.lineNum, content: c.content}
+	return command.Execute()
 }

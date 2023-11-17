@@ -8,8 +8,8 @@ import (
 type save struct {
 }
 
-func (c *save) Execute() (Command, error) {
-	return nil, tree.OutputAsFile(1)
+func (c *save) Execute() error {
+	return tree.OutputAsFile(1)
 }
 
 func (c *save) SetArgs(args []string) error {

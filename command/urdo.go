@@ -2,36 +2,27 @@ package command
 
 import (
 	e "design/myError"
-	"reflect"
+	//"reflect"
 )
 
-type History struct {
-	command        Command
-	reverseCommand Command
-}
-
 // record commands which has reverse_command except undo
-var commandsHistory []History
-
-// record in undoHistory rather than go to commandsHistory when undo
+// record in undoHistory rather than go to canUnDoHistory when undo
 // flush undoHistory when log
-var undoHistory *History
+var canUnDoHistory []UndoableCommand
+
+var canUnDoPointer int
 
 type undo struct{}
 
-func (c *undo) Execute() (Command, error) {
-	ch := next()
-	if ch == nil {
-		return nil, nil
+func (c *undo) Execute() error {
+	undoableCommand := next()
+	if undoableCommand == nil {
+		return nil
 	}
-	command, err := ch.reverseCommand.Execute()
-	if err != nil {
-		return nil, err
-	}
-	undoHistory = &History{command: c, reverseCommand: command}
-	return nil, nil
-	// 因为只有redo会检测undo所以希望undo不进入next
+	err := undoableCommand.UndoExecute()
+	return err
 }
+
 func (c *undo) SetArgs(args []string) error {
 	if len(args) != 1 {
 		return e.NewMyError("undo: args error")
@@ -45,19 +36,13 @@ func (c *undo) CallSelf() string {
 
 type redo struct{}
 
-func (c *redo) Execute() (Command, error) {
-	if undoHistory == nil {
-		return nil, nil
+func (c *redo) Execute() error {
+	command := previous()
+	if command == nil {
+		return nil
 	}
-	if reflect.TypeOf(undoHistory.command).Elem().Name() != "undo" {
-		return nil, nil
-	}
-	command, err := undoHistory.reverseCommand.Execute()
-	if err != nil {
-		return nil, err
-	}
-	undoHistory = nil
-	return command, nil
+	err := command.Execute()
+	return err
 }
 
 func (c *redo) SetArgs(args []string) error {
@@ -71,29 +56,22 @@ func (c *redo) CallSelf() string {
 	return "redo"
 }
 
-func next() *History {
-	pointer := len(commandsHistory) - 1
-	// delete after undo
-	// insert after redo
-	// simulate stack
-	for {
-		if pointer < 0 {
-			// !!!!!!!!! condition isn't equal 0
-			return nil
-		}
-		c := commandsHistory[pointer]
+// pointer: - 1 ~ len - 1
+// means next undo Command
+func next() UndoableCommand {
+	if canUnDoPointer >= 0 && canUnDoPointer < len(canUnDoHistory) {
+		canUnDoPointer--
+		return canUnDoHistory[canUnDoPointer+1]
+	} else {
+		return nil
+	}
+}
 
-		if c.reverseCommand == nil {
-			name := reflect.TypeOf(c.command).Elem().Name()
-			if name == "save" || name == "load" {
-				return nil
-			}
-			pointer--
-			commandsHistory = commandsHistory[:pointer+1]
-			continue
-		}
-
-		commandsHistory = commandsHistory[:pointer]
-		return &c
+func previous() UndoableCommand {
+	if canUnDoPointer >= -1 && canUnDoPointer < len(canUnDoHistory)-1 {
+		canUnDoPointer++
+		return canUnDoHistory[canUnDoPointer]
+	} else {
+		return nil
 	}
 }

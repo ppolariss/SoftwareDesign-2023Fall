@@ -10,7 +10,7 @@ type load struct {
 	filepath string
 }
 
-func (c *load) Execute() (Command, error) {
+func (c *load) Execute() error {
 	// filepath := "../file/test.txt"
 	// 通过main.go运行，相对路径名要从main.go所在的目录开始！！！
 	if len(c.filepath) > 5 && c.filepath[:5] == "file/" {
@@ -21,7 +21,7 @@ func (c *load) Execute() (Command, error) {
 
 	curFile.fileName = c.filepath
 	curFile.createAt = util.GetNow()
-	return nil, tree.Load(c.filepath)
+	return tree.Load(c.filepath)
 }
 
 func (c *load) SetArgs(args []string) error {

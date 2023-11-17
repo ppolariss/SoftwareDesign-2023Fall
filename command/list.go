@@ -9,9 +9,9 @@ import (
 type list struct {
 }
 
-func (c *list) Execute() (Command, error) {
+func (c *list) Execute() error {
 	// tree.Dump()
-	return nil, tree.OutputAsFile(0)
+	return tree.OutputAsFile(0)
 }
 
 func (c *list) SetArgs(args []string) error {
@@ -27,8 +27,8 @@ func (c *list) CallSelf() string {
 
 type listTree struct{}
 
-func (c *listTree) Execute() (Command, error) {
-	return nil, tree.OutputAsTree()
+func (c *listTree) Execute() error {
+	return tree.OutputAsTree()
 }
 func (c *listTree) SetArgs(args []string) error {
 	if len(args) != 1 {
@@ -44,11 +44,11 @@ type dirTree struct {
 	directory string
 }
 
-func (c *dirTree) Execute() (Command, error) {
+func (c *dirTree) Execute() error {
 	if c.directory == "" {
-		return nil, tree.OutputAsTree()
+		return tree.OutputAsTree()
 	} else {
-		return nil, tree.OutputAsDir(c.directory)
+		return tree.OutputAsDir(c.directory)
 	}
 }
 

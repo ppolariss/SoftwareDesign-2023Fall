@@ -14,17 +14,17 @@ type history struct {
 	num int
 }
 
-func (c *history) Execute() (Command, error) {
+func (c *history) Execute() error {
 	f, err := os.OpenFile("./log/log", os.O_RDWR, 0644)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer func(f *os.File) {
 		_ = f.Close()
 	}(f)
 	tempHistory, err := util.ReadStrings(f)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	var count int
@@ -40,7 +40,7 @@ func (c *history) Execute() (Command, error) {
 		count--
 	}
 
-	return nil, nil
+	return nil
 }
 
 func (c *history) SetArgs(args []string) error {
@@ -72,30 +72,30 @@ type stats struct {
 	status string
 }
 
-func (c *stats) Execute() (Command, error) {
+func (c *stats) Execute() error {
 	if c.status == "current" {
 		interval, err := util.GetInterval(util.GetNow(), curFile.createAt)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		fmt.Println(curFile.fileName + " " + interval)
-		return nil, nil
+		return nil
 	}
 	f, err := os.OpenFile("./log/logFile", os.O_RDWR, 0644)
 	if err != nil {
-		return nil, err
+		return nil
 	}
 	defer func(f *os.File) {
 		_ = f.Close()
 	}(f)
 	tempHistory, err := util.ReadStrings(f)
 	if err != nil {
-		return nil, err
+		return nil
 	}
 	for _, v := range tempHistory {
 		fmt.Println(v)
 	}
-	return nil, nil
+	return nil
 }
 
 func (c *stats) SetArgs(args []string) error {

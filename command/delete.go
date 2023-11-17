@@ -13,13 +13,13 @@ type deleteCommand struct {
 	content string //node.content
 }
 
-func (c *deleteCommand) Execute() (Command, error) {
-	nth, content, err := tree.Delete(c.lineNum, c.content)
+func (c *deleteCommand) Execute() error {
+	var err error
+	c.lineNum, c.content, err = tree.Delete(c.lineNum, c.content)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	insert := &insert{lineNum: nth, content: content}
-	return insert, nil
+	return nil
 	// 删除指定标题或⽂本。如果指定⾏号，则删除指定⾏。当删除的是标题时，其⼦标题
 	// 和内容不会被删除。
 }
@@ -58,4 +58,9 @@ func (c *deleteCommand) CallSelf() string {
 		retStr += " " + c.content
 	}
 	return retStr
+}
+
+func (c *deleteCommand) UndoExecute() error {
+	i := insert{lineNum: c.lineNum, content: c.content}
+	return i.Execute()
 }
