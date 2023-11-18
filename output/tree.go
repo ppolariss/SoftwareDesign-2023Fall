@@ -1,4 +1,4 @@
-package tree
+package output
 
 import (
 	e "design/myError"
@@ -12,31 +12,17 @@ type Node struct {
 	grade    int
 }
 
-var filePath string
-
-// var Length int
 var root *Node
 var once sync.Once
-var fileContent []string
-
-func Load(path string) error {
-	filePath = path
-	var err error
-	_, err = parseFromFile(path)
-	return err
-}
-
-//func updateLength(num int) int {
-//	if num != 0 {
-//		Length += num
-//	} else {
-//		Length = len(fileContent)
-//	}
-//	return Length
-//}
 
 func IsInit() bool {
-	return filePath != ""
+	if GetRoot() == nil {
+		return false
+	}
+	//if len(GetRoot().children) == 0 {
+	//	return false
+	//}
+	return true
 }
 
 func GetRoot() *Node {
@@ -128,17 +114,22 @@ func (node *Node) next() *Node {
 	}
 }
 
-// return lineNum according to content
-func matchContent(content string) (int, error) {
-	for i, v := range fileContent {
-		s := getBareContent(v)
-		if s == content {
-			return i + 1, nil
+// find the nth node in the tree,
+// if not found, return nil
+// n-- when recursive dfs
+func getNodeByNth(node *Node, lineNum int) (*Node, int) {
+	if node != GetRoot() {
+		lineNum--
+	}
+	if lineNum == 0 {
+		return node, lineNum
+	}
+	for _, v := range node.children {
+		var returnNode *Node
+		returnNode, lineNum = getNodeByNth(v, lineNum)
+		if lineNum == 0 {
+			return returnNode, lineNum
 		}
 	}
-	return 0, e.NewMyError("matchContent(): content not found")
-}
-
-func getLength() int {
-	return len(fileContent)
+	return nil, lineNum
 }

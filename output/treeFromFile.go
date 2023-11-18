@@ -1,9 +1,7 @@
-package tree
+package output
 
 import (
-	"bufio"
 	e "design/myError"
-	"os"
 )
 
 // when adding a new node, the position of the node is determined by the current node and the grade,
@@ -49,67 +47,60 @@ func traceback(currentNode *Node, newNode *Node) error {
 	return nil
 }
 
-// parse a new file to a tree
-// return the length and error
-func parseFromFile(filePath string) (int, error) {
-	root := GetRoot()
-	if root.children != nil {
-		root.children = []*Node{}
-	}
-
-	file, err := os.OpenFile(filePath, os.O_RDONLY|os.O_CREATE, 0644)
-	if err != nil {
-		return 0, e.NewMyError(err.Error())
-	}
-	defer func(file *os.File) {
-		_ = file.Close()
-	}(file)
-
-	current := root
-	reader := bufio.NewReader(file)
-	returnFlag := false
-	count := 0
-	for {
-		content, err := reader.ReadString('\n')
-		if err != nil {
-			if err.Error() == "EOF" {
-				if content == "" {
-					break
-				}
-				returnFlag = true
-				// 注意此处还要处理最后一行
-			} else {
-				return count, e.NewMyError(err.Error())
-			}
-		}
-		// if content == "" {
-		// 	continue
-		// }
-		count++
-
-		fileContent = append(fileContent, content)
-		node, grade := ParseToNode(content)
-		if err != nil {
-			return count, e.NewMyError(err.Error())
-		}
-
-		err = traceback(current, node)
-		if err != nil {
-			return count, e.NewMyError(err.Error())
-		}
-
-		if grade != 0 {
-			current = node
-		}
-		if returnFlag {
-			break
-		}
-	}
-	// Dump()
-	// below is written at 2023/11/18
-	err = tree2string()
-	if err != nil {
-		return 0, err
-	}
-	return count, nil
-}
+//// parse a new file to a tree
+//// return the length and error
+//func parseFromFile(filePath string) error {
+//	root := GetRoot()
+//	if root.children != nil {
+//		root.children = []*Node{}
+//	}
+//
+//
+//
+//	current := root
+//
+//	count := 0
+//	for {
+//		content, err := reader.ReadString('\n')
+//		if err != nil {
+//			if err.Error() == "EOF" {
+//				if content == "" {
+//					break
+//				}
+//				returnFlag = true
+//				// 注意此处还要处理最后一行
+//			} else {
+//				return e.NewMyError(err.Error())
+//			}
+//		}
+//		// if content == "" {
+//		// 	continue
+//		// }
+//		count++
+//
+//		fileEditor.fileContent = append(fileEditor.fileContent, content)
+//		node, grade := ParseToNode(content)
+//		if err != nil {
+//			return e.NewMyError(err.Error())
+//		}
+//
+//		err = traceback(current, node)
+//		if err != nil {
+//			return e.NewMyError(err.Error())
+//		}
+//
+//		if grade != 0 {
+//			current = node
+//		}
+//		if returnFlag {
+//			break
+//		}
+//	}
+//	// Dump()
+//	// below is written at 2023/11/18
+//	err = tree2string()
+//	if err != nil {
+//		return err
+//	}
+//	return nil
+//}

@@ -1,4 +1,4 @@
-package tree
+package output
 
 import (
 	e "design/myError"
@@ -7,13 +7,13 @@ import (
 	"strings"
 )
 
-func string2tree() error {
+func string2tree(ss []string) error {
 	current := GetRoot()
 	if current.children != nil {
 		current.children = []*Node{}
 	}
 
-	for _, content := range fileContent {
+	for _, content := range ss {
 		node, grade := ParseToNode(content)
 		err := traceback(current, node)
 		if err != nil {
@@ -26,15 +26,15 @@ func string2tree() error {
 	return nil
 }
 
-func tree2string() error {
+func tree2string() ([]string, error) {
 	root := GetRoot()
-	fileContent = []string{}
+	var content []string
 	next := root.next()
 	for next != nil {
-		fileContent = append(fileContent, next.Node2String())
+		content = append(content, next.Node2String())
 		next = next.next()
 	}
-	return nil
+	return content, nil
 }
 
 func (node *Node) Node2String() string {
@@ -72,38 +72,6 @@ func parseToString(content string) (int, string) {
 
 func transNum(s string) string {
 	s = strings.TrimRight(s, "\n")
-	ss := strings.Split(s, " ")
-	if len(ss) == 1 {
-		return s
-	}
-	// try to parse the first word to int
-	_, err := strconv.Atoi(ss[0][:len(ss[0])-1])
-	if err != nil {
-		return s
-	}
-	return strings.Join(ss[1:], " ")
-}
-
-func getBareContent(s string) string {
-	s = strings.TrimRight(s, "\n")
-	if s == "" {
-		return s
-	}
-	i := 0
-	for {
-		if s[i] == '#' {
-			i++
-		} else if s[i] == ' ' {
-			break
-		} else {
-			i = 0
-			break
-		}
-	}
-	if i > 0 {
-		s = s[i+1:]
-	}
-
 	ss := strings.Split(s, " ")
 	if len(ss) == 1 {
 		return s

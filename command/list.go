@@ -1,17 +1,21 @@
 package command
 
 import (
+	"design/fileEditor"
 	e "design/myError"
-	"design/tree"
+	"design/output"
 	"strings"
 )
 
 type list struct {
 }
 
+var fileContent []string
+
 func (c *list) Execute() error {
 	// tree.Dump()
-	return tree.OutputAsFile(0)
+	getFileContent()
+	return output.OutputAsFile(0, fileContent, filePath)
 }
 
 func (c *list) SetArgs(args []string) error {
@@ -28,7 +32,8 @@ func (c *list) CallSelf() string {
 type listTree struct{}
 
 func (c *listTree) Execute() error {
-	return tree.OutputAsTree()
+	getFileContent()
+	return output.OutputAsTree(fileContent)
 }
 func (c *listTree) SetArgs(args []string) error {
 	if len(args) != 1 {
@@ -45,10 +50,11 @@ type dirTree struct {
 }
 
 func (c *dirTree) Execute() error {
+	getFileContent()
 	if c.directory == "" {
-		return tree.OutputAsTree()
+		return output.OutputAsTree(fileContent)
 	} else {
-		return tree.OutputAsDir(c.directory)
+		return output.OutputAsDir(c.directory, fileContent)
 	}
 }
 
@@ -61,4 +67,8 @@ func (c *dirTree) SetArgs(args []string) error {
 }
 func (c *dirTree) CallSelf() string {
 	return "dir-tree"
+}
+
+func getFileContent() {
+	fileContent = fileEditor.GetFileContent()
 }

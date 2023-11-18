@@ -1,8 +1,8 @@
 package command
 
 import (
+	"design/fileEditor"
 	e "design/myError"
-	"design/tree"
 	// "fmt"
 	"strconv"
 	"strings"
@@ -15,7 +15,7 @@ type deleteCommand struct {
 
 func (c *deleteCommand) Execute() error {
 	var err error
-	c.lineNum, c.content, err = tree.Delete(c.lineNum, c.content)
+	c.lineNum, c.content, err = fileEditor.Delete(c.lineNum, c.content)
 	if err != nil {
 		return err
 	}

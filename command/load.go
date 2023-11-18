@@ -1,10 +1,12 @@
 package command
 
 import (
+	"design/fileEditor"
 	e "design/myError"
-	"design/tree"
 	"design/util"
 )
+
+var filePath string
 
 type load struct {
 	filepath string
@@ -20,8 +22,9 @@ func (c *load) Execute() error {
 	}
 
 	curFile.fileName = c.filepath
+	filePath = c.filepath
 	curFile.createAt = util.GetNow()
-	return tree.Load(c.filepath)
+	return fileEditor.Load(c.filepath)
 }
 
 func (c *load) SetArgs(args []string) error {

@@ -2,14 +2,15 @@ package command
 
 import (
 	e "design/myError"
-	"design/tree"
+	"design/output"
 )
 
 type save struct {
 }
 
 func (c *save) Execute() error {
-	return tree.OutputAsFile(1)
+	getFileContent()
+	return output.OutputAsFile(1, fileContent, filePath)
 }
 
 func (c *save) SetArgs(args []string) error {

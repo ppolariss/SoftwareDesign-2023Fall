@@ -1,8 +1,8 @@
 package command
 
 import (
+	"design/fileEditor"
 	e "design/myError"
-	"design/tree"
 	// "fmt"
 	"strconv"
 	"strings"
@@ -35,7 +35,7 @@ func (c *insert) Execute() error {
 	//	return tree.Insert(c.lineNum, c.content)
 	//}
 	var err error
-	c.lineNum, err = tree.Insert(c.lineNum, c.content)
+	c.lineNum, err = fileEditor.Insert(c.lineNum, c.content)
 	return err
 }
 
@@ -92,7 +92,7 @@ func (c *appendHead) Execute() error {
 	//if err != nil {
 	//	return err
 	//}
-	_, err := tree.Insert(1, c.content)
+	_, err := fileEditor.Insert(1, c.content)
 	return err
 }
 
@@ -129,7 +129,7 @@ func (c *appendTail) Execute() error {
 	//c.lineNum, err = tree.AppendTail(n)
 	//return err
 	var err error
-	c.lineNum, err = tree.Insert(-1, c.content)
+	c.lineNum, err = fileEditor.Insert(-1, c.content)
 	return err
 }
 

@@ -1,4 +1,4 @@
-package tree
+package output
 
 import (
 	e "design/myError"
@@ -47,8 +47,8 @@ func recurOutputAsFile(node *Node, file *os.File) {
 }
 
 // OutputAsFile para: 0: output to terminal; 1: output to file
-func OutputAsFile(para int) error {
-	err := string2tree()
+func OutputAsFile(para int, fileContent []string, filePath string) error {
+	err := string2tree(fileContent)
 	if err != nil {
 		return err
 	}
@@ -108,8 +108,8 @@ func recurOutputAsTree(prefix string, node *Node) error {
 	return nil
 }
 
-func OutputAsTree() error {
-	err := string2tree()
+func OutputAsTree(fileContent []string) error {
+	err := string2tree(fileContent)
 	if err != nil {
 		return err
 	}
@@ -127,8 +127,8 @@ func OutputAsTree() error {
 	return nil
 }
 
-func OutputAsDir(content string) error {
-	err := string2tree()
+func OutputAsDir(content string, fileContent []string) error {
+	err := string2tree(fileContent)
 	if err != nil {
 		return err
 	}
