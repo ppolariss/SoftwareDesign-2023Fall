@@ -2,6 +2,7 @@ package command
 
 import (
 	e "design/myError"
+	"reflect"
 	//"reflect"
 )
 
@@ -74,4 +75,23 @@ func previous() UndoableCommand {
 	} else {
 		return nil
 	}
+}
+
+type recordUndoableCommand struct {
+}
+
+func (c *recordUndoableCommand) update(command Command) error {
+	name := reflect.TypeOf(command).Elem().Name()
+	if name == "save" || name == "load" {
+		canUnDoHistory = canUnDoHistory[:0]
+		canUnDoPointer = 0
+		return nil
+	}
+	// if command is undoable
+	undoableCommand, ok := command.(UndoableCommand)
+	if ok {
+		canUnDoHistory = append(canUnDoHistory, undoableCommand)
+		canUnDoPointer = len(canUnDoHistory) - 1
+	}
+	return nil
 }

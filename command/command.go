@@ -4,12 +4,37 @@ import (
 	"bufio"
 	e "design/myError"
 	"os"
-	"reflect"
-
-	"design/util"
 	"strings"
 	"sync"
 )
+
+type observer interface {
+	update(command Command) error
+}
+
+var observers []observer
+
+func notifyObserver(command Command) error {
+	for _, o := range observers {
+		err := o.update(command)
+		if err != nil {
+			return e.NewMyError("notifyObserver error")
+		}
+	}
+	return nil
+}
+
+func registerObserver(o observer) {
+	observers = append(observers, o)
+}
+func removeObserver(o observer) {
+	for i, ob := range observers {
+		if ob == o {
+			observers = append(observers[:i], observers[i+1:]...)
+			break
+		}
+	}
+}
 
 type Command interface {
 	SetArgs([]string) error
@@ -46,6 +71,10 @@ func init() {
 	commandsMapper["dir-tree"] = &dirTree{}
 	commandsMapper["history"] = &history{}
 	commandsMapper["stats"] = &stats{}
+
+	registerObserver(&recordUndoableCommand{})
+	registerObserver(&log{})
+	registerObserver(&logFile{})
 }
 
 // Do must get input outside
@@ -63,18 +92,10 @@ func Do() error {
 		if err != nil {
 			return err
 		}
-		err = log(command)
+
+		err = notifyObserver(command)
 		if err != nil {
 			return err
-		}
-		updateCanUndoHistory(command)
-
-		// logFile when save
-		if reflect.TypeOf(command).Elem().Name() == "save" {
-			err = logFile()
-			if err != nil {
-				return err
-			}
 		}
 	}
 	// 错误日志
@@ -109,53 +130,4 @@ func ReadCommand(scanner *bufio.Scanner) (Command, error) {
 		return nil, err
 	}
 	return command, nil
-}
-
-func log(command Command) error {
-	// global variable of logger
-	f, err := os.OpenFile("./log/log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		return e.NewMyError("open log error")
-	}
-	defer func() {
-		_ = f.Close()
-	}()
-
-	once.Do(func() {
-		_ = util.Output("session start at "+util.GetNow()+"\n", f)
-	})
-
-	_ = util.Output(util.GetNow()+" "+command.CallSelf()+"\n", f)
-	return nil
-}
-
-func updateCanUndoHistory(command Command) {
-	name := reflect.TypeOf(command).Elem().Name()
-	if name == "save" || name == "load" {
-		canUnDoHistory = canUnDoHistory[:0]
-		canUnDoPointer = 0
-		return
-	}
-	if undoableCommand, ok := command.(UndoableCommand); ok {
-		canUnDoHistory = append(canUnDoHistory, undoableCommand)
-		canUnDoPointer = len(canUnDoHistory) - 1
-	}
-}
-
-func logFile() error {
-	interval, err := util.GetInterval(util.GetNow(), curFile.createAt)
-	if err != nil {
-		return err
-	}
-	f, err := os.OpenFile("./log/logFile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		return err
-	}
-
-	once.Do(func() {
-		_ = f.Truncate(0)
-		_ = util.Output("session start at "+curFile.createAt+"\n", f)
-	})
-	_ = util.Output(curFile.fileName+" "+interval+"\n", f)
-	return nil
 }
