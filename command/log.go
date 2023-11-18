@@ -11,6 +11,12 @@ type log struct {
 }
 
 func (l *log) update(command Command) error {
+	var callSelf string
+	if command == nil {
+		callSelf = "error"
+	}
+	callSelf = command.CallSelf()
+
 	// global variable of logger
 	f, err := os.OpenFile("./log/log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
@@ -24,7 +30,7 @@ func (l *log) update(command Command) error {
 		_ = util.Output("session start at "+util.GetNow()+"\n", f)
 	})
 
-	_ = util.Output(util.GetNow()+" "+command.CallSelf()+"\n", f)
+	_ = util.Output(util.GetNow()+" "+callSelf+"\n", f)
 	return nil
 }
 
@@ -32,6 +38,9 @@ type logFile struct {
 }
 
 func (l *logFile) update(command Command) error {
+	if command == nil {
+		return nil
+	}
 	if reflect.TypeOf(command).Elem().Name() != "save" {
 		return nil
 	}

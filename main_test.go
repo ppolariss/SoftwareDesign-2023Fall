@@ -24,7 +24,6 @@ func TestCommand(t *testing.T) {
 	oldStdin := os.Stdin
 	oldStdout := os.Stdout
 	defer func() {
-
 		os.Stdin = oldStdin
 		os.Stdout = oldStdout
 	}()

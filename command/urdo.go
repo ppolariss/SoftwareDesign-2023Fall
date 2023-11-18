@@ -81,6 +81,9 @@ type recordUndoableCommand struct {
 }
 
 func (c *recordUndoableCommand) update(command Command) error {
+	if command == nil {
+		return nil
+	}
 	name := reflect.TypeOf(command).Elem().Name()
 	if name == "save" || name == "load" {
 		canUnDoHistory = canUnDoHistory[:0]
