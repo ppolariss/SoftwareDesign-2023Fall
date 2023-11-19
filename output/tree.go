@@ -1,7 +1,7 @@
 package output
 
 import (
-	e "design/myError"
+	"errors"
 	"sync"
 )
 
@@ -56,7 +56,7 @@ func GetGrade(content string) int {
 // return 0~len-2,-1
 func getRankofParent(node *Node) (int, error) {
 	if node.parent == nil {
-		return 0, e.NewMyError("getRankofParent(): node.parent == nil")
+		return 0, errors.New("getRankofParent(): node.parent == nil")
 	}
 	for i, v := range node.parent.children {
 		if v == node {
@@ -66,7 +66,7 @@ func getRankofParent(node *Node) (int, error) {
 			return i, nil
 		}
 	}
-	return 0, e.NewMyError("getRankofParent(): node.parent.children not found")
+	return 0, errors.New("getRankofParent(): node.parent.children not found")
 }
 
 // para content to find, node to start, nth

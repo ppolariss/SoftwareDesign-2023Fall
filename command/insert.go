@@ -1,8 +1,9 @@
 package command
 
 import (
-	"design/fileEditor"
-	e "design/myError"
+	"errors"
+
+	"design/editor"
 	// "fmt"
 	"strconv"
 	"strings"
@@ -35,13 +36,13 @@ func (c *insert) Execute() error {
 	//	return tree.Insert(c.lineNum, c.content)
 	//}
 	var err error
-	c.lineNum, err = fileEditor.Insert(c.lineNum, c.content)
+	c.lineNum, err = editor.Insert(c.lineNum, c.content)
 	return err
 }
 
 func (c *insert) SetArgs(args []string) error {
 	if len(args) < 2 {
-		return e.NewMyError("insert: args error")
+		return errors.New("insert: args error")
 	} else if len(args) == 2 {
 		c.lineNum = -1
 		c.content = args[1]
@@ -58,7 +59,7 @@ func (c *insert) SetArgs(args []string) error {
 		// in order not to couple the bottom
 		//|| num > tree.Length+1
 		if num <= 0 {
-			return e.NewMyError("insert: line number error")
+			return errors.New("insert: line number error")
 		}
 		c.lineNum = num
 		sliceArgs := args[2:]
@@ -92,13 +93,13 @@ func (c *appendHead) Execute() error {
 	//if err != nil {
 	//	return err
 	//}
-	_, err := fileEditor.Insert(1, c.content)
+	_, err := editor.Insert(1, c.content)
 	return err
 }
 
 func (c *appendHead) SetArgs(args []string) error {
 	if len(args) < 2 {
-		return e.NewMyError("append_head: args error")
+		return errors.New("append_head: args error")
 	}
 	sliceArgs := args[1:]
 	c.content = strings.Join(sliceArgs, " ")
@@ -129,13 +130,13 @@ func (c *appendTail) Execute() error {
 	//c.lineNum, err = tree.AppendTail(n)
 	//return err
 	var err error
-	c.lineNum, err = fileEditor.Insert(-1, c.content)
+	c.lineNum, err = editor.Insert(-1, c.content)
 	return err
 }
 
 func (c *appendTail) SetArgs(args []string) error {
 	if len(args) < 2 {
-		return e.NewMyError("append_tail: args error")
+		return errors.New("append_tail: args error")
 	}
 	sliceArgs := args[1:]
 	c.content = strings.Join(sliceArgs, " ")

@@ -1,7 +1,7 @@
 package output
 
 import (
-	e "design/myError"
+	"errors"
 	// "fmt"
 	"strconv"
 	"strings"
@@ -17,7 +17,7 @@ func string2tree(ss []string) error {
 		node, grade := ParseToNode(content)
 		err := traceback(current, node)
 		if err != nil {
-			return e.NewMyError(err.Error())
+			return errors.New(err.Error())
 		}
 		if grade != 0 {
 			current = node

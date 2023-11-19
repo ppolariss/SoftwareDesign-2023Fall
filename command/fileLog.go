@@ -1,13 +1,14 @@
 package command
 
 import (
-	. "design/interfaces"
-	e "design/myError"
-	"design/util"
+	"errors"
 	"fmt"
 	"os"
 	"reflect"
 	"sync"
+
+	. "design/interfaces"
+	"design/util"
 )
 
 var once sync.Once
@@ -45,13 +46,13 @@ func (c *stats) Execute() error {
 
 func (c *stats) SetArgs(args []string) error {
 	if len(args) > 2 {
-		return e.NewMyError("stats: args error")
+		return errors.New("stats: args error")
 	}
 	if len(args) == 1 {
 		c.status = "current"
 	} else {
 		if args[1] != "current" && args[1] != "all" {
-			return e.NewMyError("stats: args error")
+			return errors.New("stats: args error")
 		}
 		c.status = args[1]
 	}

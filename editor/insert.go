@@ -1,20 +1,21 @@
-package fileEditor
+package editor
 
 import (
-	e "design/myError"
+	"errors"
+
 	"design/output"
 )
 
 func Insert(lineNum int, content string) (int, error) {
 	if !output.IsInit() {
-		return 0, e.NewMyError("insert: No file in workspace")
+		return 0, errors.New("insert: No file in workspace")
 	}
 	if lineNum == -1 {
 		fileContent = append(fileContent, content)
 		return getLength(), nil
 	}
 	if lineNum > getLength()+1 || lineNum < 1 {
-		return 0, e.NewMyError("insert: line number out of range")
+		return 0, errors.New("insert: line number out of range")
 	}
 
 	// n-1 node before newline

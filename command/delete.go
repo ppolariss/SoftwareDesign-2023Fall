@@ -1,8 +1,9 @@
 package command
 
 import (
-	"design/fileEditor"
-	e "design/myError"
+	"errors"
+
+	"design/editor"
 	// "fmt"
 	"strconv"
 	"strings"
@@ -15,7 +16,7 @@ type deleteCommand struct {
 
 func (c *deleteCommand) Execute() error {
 	var err error
-	c.lineNum, c.content, err = fileEditor.Delete(c.lineNum, c.content)
+	c.lineNum, c.content, err = editor.Delete(c.lineNum, c.content)
 	if err != nil {
 		return err
 	}
@@ -26,7 +27,7 @@ func (c *deleteCommand) Execute() error {
 
 func (c *deleteCommand) SetArgs(args []string) error {
 	if len(args) < 2 {
-		return e.NewMyError("delete: args error")
+		return errors.New("delete: args error")
 	}
 
 	// parse to line_num if and only if the rest is a positive number
@@ -34,7 +35,7 @@ func (c *deleteCommand) SetArgs(args []string) error {
 		num, err := strconv.Atoi(args[1])
 		if err == nil && num > 0 {
 			//if num > tree.Length {
-			//	return e.NewMyError("delete: line number error")
+			//	return errors.New("delete: line number error")
 			//}
 			c.lineNum = num
 			c.content = ""

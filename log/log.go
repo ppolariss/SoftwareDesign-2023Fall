@@ -1,11 +1,12 @@
 package log
 
 import (
-	. "design/interfaces"
-	e "design/myError"
-	"design/util"
+	"errors"
 	"os"
 	"sync"
+
+	. "design/interfaces"
+	"design/util"
 )
 
 var once sync.Once
@@ -23,7 +24,7 @@ func (l *Log) Update(command Command) error {
 	// global variable of logger
 	f, err := os.OpenFile("./logFiles/log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
-		return e.NewMyError("open log error")
+		return errors.New("open log error")
 	}
 	defer func() {
 		_ = f.Close()

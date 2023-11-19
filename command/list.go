@@ -1,10 +1,11 @@
 package command
 
 import (
-	"design/fileEditor"
-	e "design/myError"
-	"design/output"
+	"errors"
 	"strings"
+
+	"design/editor"
+	"design/output"
 )
 
 type list struct {
@@ -20,7 +21,7 @@ func (c *list) Execute() error {
 
 func (c *list) SetArgs(args []string) error {
 	if len(args) != 1 {
-		return e.NewMyError("list: args error")
+		return errors.New("list: args error")
 	}
 	return nil
 }
@@ -37,7 +38,7 @@ func (c *listTree) Execute() error {
 }
 func (c *listTree) SetArgs(args []string) error {
 	if len(args) != 1 {
-		return e.NewMyError("list_tree: args error")
+		return errors.New("list_tree: args error")
 	}
 	return nil
 }
@@ -70,5 +71,5 @@ func (c *dirTree) CallSelf() string {
 }
 
 func getFileContent() {
-	fileContent = fileEditor.GetFileContent()
+	fileContent = editor.GetFileContent()
 }

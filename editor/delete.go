@@ -1,7 +1,8 @@
-package fileEditor
+package editor
 
 import (
-	e "design/myError"
+	"errors"
+
 	"design/output"
 )
 
@@ -11,11 +12,11 @@ func Delete(lineNum int, content string) (int, string, error) {
 
 	var originContent string
 	if !output.IsInit() {
-		return 0, "", e.NewMyError("delete: No file in workspace")
+		return 0, "", errors.New("delete: No file in workspace")
 	}
 	if lineNum > 0 {
 		if lineNum > getLength() {
-			return 0, "", e.NewMyError("delete: line number out of range")
+			return 0, "", errors.New("delete: line number out of range")
 		}
 		originContent = fileContent[lineNum-1]
 	} else {
@@ -25,7 +26,7 @@ func Delete(lineNum int, content string) (int, string, error) {
 			return 0, "", err
 		}
 		if lineNum <= 0 || lineNum > getLength() {
-			return 0, "", e.NewMyError("delete: content not match")
+			return 0, "", errors.New("delete: content not match")
 		}
 		originContent = fileContent[lineNum-1]
 	}

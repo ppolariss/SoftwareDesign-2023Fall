@@ -1,12 +1,13 @@
 package log
 
 import (
-	e "design/myError"
+	"errors"
 	"fmt"
 	"os"
 
-	"design/util"
 	"strconv"
+
+	"design/util"
 )
 
 type History struct {
@@ -45,14 +46,14 @@ func (c *History) Execute() error {
 
 func (c *History) SetArgs(args []string) error {
 	if len(args) > 2 {
-		return e.NewMyError("history: args error")
+		return errors.New("history: args error")
 	}
 	if len(args) == 1 {
 		c.num = -1
 	} else {
 		num, err := strconv.Atoi(args[1])
 		if err != nil || num < 1 {
-			return e.NewMyError("history: args error")
+			return errors.New("history: args error")
 		}
 		c.num = num
 	}

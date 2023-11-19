@@ -1,8 +1,9 @@
 package commandManager
 
 import (
-	. "design/interfaces"
 	"reflect"
+
+	. "design/interfaces"
 )
 
 type RecordUndoableCommand struct {

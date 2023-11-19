@@ -2,10 +2,11 @@ package workspace
 
 import (
 	"bufio"
-	. "design/interfaces"
-	e "design/myError"
+	"errors"
 	"fmt"
 	"os"
+
+	. "design/interfaces"
 )
 
 type Workspace struct {
@@ -36,7 +37,7 @@ func updateWorkspace(curWorkspace Workspace) {
 
 func (curWorkspace *Workspace) Load(fileName string) (*Workspace, error) {
 	if curWorkspace == nil {
-		return nil, e.NewMyError("load: curWorkspace is nil")
+		return nil, errors.New("load: curWorkspace is nil")
 	}
 	updateWorkspace(*curWorkspace)
 
@@ -58,7 +59,7 @@ func (curWorkspace *Workspace) Load(fileName string) (*Workspace, error) {
 
 	file, err := os.OpenFile(filePath, os.O_RDONLY|os.O_CREATE, 0644)
 	if err != nil {
-		return nil, e.NewMyError(err.Error())
+		return nil, errors.New(err.Error())
 	}
 	defer func(file *os.File) {
 		_ = file.Close()
@@ -69,7 +70,7 @@ func (curWorkspace *Workspace) Load(fileName string) (*Workspace, error) {
 		content, err := reader.ReadString('\n')
 		if err != nil {
 			if err.Error() != "EOF" {
-				return nil, e.NewMyError(err.Error())
+				return nil, errors.New(err.Error())
 			}
 
 			if content == "" {
@@ -91,7 +92,7 @@ func (curWorkspace *Workspace) Load(fileName string) (*Workspace, error) {
 
 func (curWorkspace *Workspace) Open(fileName string) (*Workspace, error) {
 	if curWorkspace == nil {
-		return nil, e.NewMyError("open: curWorkspace is nil")
+		return nil, errors.New("open: curWorkspace is nil")
 	}
 	updateWorkspace(*curWorkspace)
 	_, ok := allWorkspaces[fileName]
@@ -99,19 +100,19 @@ func (curWorkspace *Workspace) Open(fileName string) (*Workspace, error) {
 		CurrentWorkspace = allWorkspaces[fileName]
 		return &CurrentWorkspace, nil
 	}
-	return nil, e.NewMyError("open: no such file")
+	return nil, errors.New("open: no such file")
 }
 
 func (curWorkspace *Workspace) Close(fileName string) error {
 	if curWorkspace == nil {
-		return e.NewMyError("close: curWorkspace is nil")
+		return errors.New("close: curWorkspace is nil")
 	}
 	if curWorkspace.Dirty {
 		fmt.Println("Do you want to save the current workspace [Y\\N] ？")
 		var input string
 		_, err := fmt.Scanln(&input)
 		if err != nil {
-			return e.NewMyError(err.Error())
+			return errors.New(err.Error())
 		}
 		if input == "Y" || input == "y" {
 			updateWorkspace(*curWorkspace)
@@ -123,12 +124,12 @@ func (curWorkspace *Workspace) Close(fileName string) error {
 		delete(allWorkspaces, fileName)
 		return nil
 	}
-	return e.NewMyError("close: no such file")
+	return errors.New("close: no such file")
 
 }
 
 func (curWorkspace *Workspace) ListWorkspace() error {
-	for fileName, _ := range allWorkspaces {
+	for fileName := range allWorkspaces {
 		fmt.Println(fileName)
 	}
 	return nil

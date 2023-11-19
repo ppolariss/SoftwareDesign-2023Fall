@@ -1,6 +1,8 @@
 package interfaces
 
-import e "design/myError"
+import (
+	"errors"
+)
 
 type observer interface {
 	Update(command Command) error
@@ -12,7 +14,7 @@ func NotifyObserver(command Command) error {
 	for _, o := range observers {
 		err := o.Update(command)
 		if err != nil {
-			return e.NewMyError("notifyObserver error")
+			return errors.New("notifyObserver error")
 		}
 	}
 	return nil
