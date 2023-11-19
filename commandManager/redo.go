@@ -1,7 +1,7 @@
 package commandManager
 
 import (
-	e "design/myError"
+	"errors"
 )
 
 type Redo struct{}
@@ -17,7 +17,7 @@ func (c *Redo) Execute() error {
 
 func (c *Redo) SetArgs(args []string) error {
 	if len(args) != 1 {
-		return e.NewMyError("redo: args error")
+		return errors.New("redo: args error")
 	}
 	return nil
 }

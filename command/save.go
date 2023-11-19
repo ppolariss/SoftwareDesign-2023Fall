@@ -1,7 +1,8 @@
 package command
 
 import (
-	e "design/myError"
+	"errors"
+
 	"design/output"
 )
 
@@ -15,7 +16,7 @@ func (c *save) Execute() error {
 
 func (c *save) SetArgs(args []string) error {
 	if len(args) != 1 {
-		return e.NewMyError("save: args error")
+		return errors.New("save: args error")
 	}
 	return nil
 }

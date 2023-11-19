@@ -1,13 +1,15 @@
 package command
 
-import e "design/myError"
+import (
+	"errors"
+)
 
 type ls struct {
 }
 
 func (c *ls) SetArgs(args []string) error {
 	if len(args) != 1 {
-		return e.NewMyError("ls: args error")
+		return errors.New("ls: args error")
 	}
 	return nil
 }

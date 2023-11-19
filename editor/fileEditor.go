@@ -1,8 +1,8 @@
-package fileEditor
+package editor
 
 import (
 	"bufio"
-	e "design/myError"
+	"errors"
 	"os"
 	"strconv"
 	"strings"
@@ -17,7 +17,7 @@ func Load(path string) error {
 
 	file, err := os.OpenFile(filePath, os.O_RDONLY|os.O_CREATE, 0644)
 	if err != nil {
-		return e.NewMyError(err.Error())
+		return errors.New(err.Error())
 	}
 	defer func(file *os.File) {
 		_ = file.Close()
@@ -28,7 +28,7 @@ func Load(path string) error {
 		content, err := reader.ReadString('\n')
 		if err != nil {
 			if err.Error() != "EOF" {
-				return e.NewMyError(err.Error())
+				return errors.New(err.Error())
 			}
 
 			if content == "" {
@@ -63,7 +63,7 @@ func matchContent(content string) (int, error) {
 			return i + 1, nil
 		}
 	}
-	return 0, e.NewMyError("matchContent(): content not found")
+	return 0, errors.New("matchContent(): content not found")
 }
 
 func getBareContent(s string) string {

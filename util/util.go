@@ -2,7 +2,7 @@ package util
 
 import (
 	"bufio"
-	e "design/myError"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -15,7 +15,7 @@ func Output(content string, file *os.File) error {
 	} else {
 		_, err := file.WriteString(content)
 		if err != nil {
-			return e.NewMyError(err.Error())
+			return errors.New(err.Error())
 		}
 	}
 	return nil
@@ -36,7 +36,7 @@ func ReadStrings(file *os.File) ([]string, error) {
 				break
 				// 注意此处还要处理最后一行
 			} else {
-				return result, e.NewMyError(err.Error())
+				return result, errors.New(err.Error())
 			}
 		}
 		if content == "" {
@@ -54,11 +54,11 @@ func GetInterval(nowTime string, createTime string) (string, error) {
 	layout := "20060102 15:04:05"
 	now, err := time.Parse(layout, nowTime)
 	if err != nil {
-		return "", e.NewMyError(err.Error())
+		return "", errors.New(err.Error())
 	}
 	create, err := time.Parse(layout, createTime)
 	if err != nil {
-		return "", e.NewMyError(err.Error())
+		return "", errors.New(err.Error())
 	}
 
 	duration := now.Sub(create)

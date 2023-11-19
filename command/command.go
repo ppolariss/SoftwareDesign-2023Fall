@@ -2,12 +2,13 @@ package command
 
 import (
 	"bufio"
+	"errors"
+	"os"
+	"strings"
+
 	"design/commandManager"
 	. "design/interfaces"
 	"design/log"
-	e "design/myError"
-	"os"
-	"strings"
 )
 
 type fileHistory struct {
@@ -15,25 +16,25 @@ type fileHistory struct {
 	createAt string
 }
 
-var commandsMapper map[string]Command
+var commandsMapper = map[string]Command{
+	"load":        &load{},
+	"save":        &save{},
+	"insert":      &insert{},
+	"delete":      &deleteCommand{},
+	"append-head": &appendHead{},
+	"append-tail": &appendTail{},
+	"undo":        &commandManager.Undo{},
+	"redo":        &commandManager.Redo{},
+	"list":        &list{},
+	"list-tree":   &listTree{},
+	"dir-tree":    &dirTree{},
+	"history":     &log.History{},
+	"stats":       &stats{},
+	"ls":          &ls{},
+}
 var curFile fileHistory
 
 func init() {
-	commandsMapper = make(map[string]Command)
-	commandsMapper["load"] = &load{}
-	commandsMapper["save"] = &save{}
-	commandsMapper["insert"] = &insert{}
-	commandsMapper["delete"] = &deleteCommand{}
-	commandsMapper["append-head"] = &appendHead{}
-	commandsMapper["append-tail"] = &appendTail{}
-	commandsMapper["undo"] = &commandManager.Undo{}
-	commandsMapper["redo"] = &commandManager.Redo{}
-	commandsMapper["list"] = &list{}
-	commandsMapper["list-tree"] = &listTree{}
-	commandsMapper["dir-tree"] = &dirTree{}
-	commandsMapper["history"] = &log.History{}
-	commandsMapper["stats"] = &stats{}
-	commandsMapper["ls"] = &ls{}
 
 	RegisterObserver(&commandManager.RecordUndoableCommand{})
 	RegisterObserver(&log.Log{})
@@ -72,7 +73,7 @@ func Do() error {
 func ReadCommand(scanner *bufio.Scanner) (Command, error) {
 	line := scanner.Text()
 	if err := scanner.Err(); err != nil {
-		return nil, e.NewMyError("Input error")
+		return nil, errors.New("input error")
 	}
 	// parse input to args
 	splitStrings := strings.Split(line, " ")
@@ -85,12 +86,12 @@ func ReadCommand(scanner *bufio.Scanner) (Command, error) {
 
 	// fmt.Println(args)
 	if len(args) == 0 {
-		return nil, e.NewMyError("Null input")
+		return nil, errors.New("no input")
 	}
 	// get command
 	command := commandsMapper[args[0]]
 	if command == nil {
-		return nil, e.NewMyError("invalid command")
+		return nil, errors.New("invalid command")
 	}
 	err := command.SetArgs(args)
 	if err != nil {

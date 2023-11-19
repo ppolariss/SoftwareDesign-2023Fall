@@ -1,8 +1,7 @@
 package commandManager
 
 import (
-	e "design/myError"
-	//"reflect"
+	"errors"
 )
 
 type Undo struct{}
@@ -18,7 +17,7 @@ func (c *Undo) Execute() error {
 
 func (c *Undo) SetArgs(args []string) error {
 	if len(args) != 1 {
-		return e.NewMyError("undo: args error")
+		return errors.New("undo: args error")
 	}
 	return nil
 }

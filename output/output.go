@@ -1,10 +1,11 @@
 package output
 
 import (
-	e "design/myError"
-	"design/util"
+	"errors"
 	"fmt"
 	"os"
+
+	"design/util"
 )
 
 const endBranch = "└── "
@@ -53,7 +54,7 @@ func OutputAsFile(para int, fileContent []string, filePath string) error {
 		return err
 	}
 	if !IsInit() {
-		return e.NewMyError("OutputAsFile(): No file in workspace")
+		return errors.New("OutputAsFile(): No file in workspace")
 	}
 
 	tree := GetRoot()
@@ -61,13 +62,13 @@ func OutputAsFile(para int, fileContent []string, filePath string) error {
 		// 向文件输入
 		file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
 		if err != nil {
-			return e.NewMyError(err.Error())
+			return errors.New(err.Error())
 		}
 
 		// 清空文件内容
 		err = file.Truncate(0)
 		if err != nil {
-			return e.NewMyError(err.Error())
+			return errors.New(err.Error())
 		}
 
 		for _, child := range tree.children {
@@ -114,7 +115,7 @@ func OutputAsTree(fileContent []string) error {
 		return err
 	}
 	if !IsInit() {
-		return e.NewMyError("OutputAsTree(): No file in workspace")
+		return errors.New("OutputAsTree(): No file in workspace")
 	}
 
 	tree := GetRoot()
@@ -133,12 +134,12 @@ func OutputAsDir(content string, fileContent []string) error {
 		return err
 	}
 	if !IsInit() {
-		return e.NewMyError("OutputAsDir(): No file in workspace")
+		return errors.New("OutputAsDir(): No file in workspace")
 	}
 
 	_, node := getNodeByContent(content)
 	if node == nil {
-		return e.NewMyError("OutputAsDir(): No such node")
+		return errors.New("OutputAsDir(): No such node")
 	}
 	fmt.Print(endBranch)
 	fmt.Println(node.content)
@@ -159,7 +160,7 @@ func OutputAsDir(content string, fileContent []string) error {
 
 // func OutputAsTree() error {
 // 	if !IsInit() {
-// 		return e.NewMyError("OutputAsTree(): No file in workspace")
+// 		return errors.New("OutputAsTree(): No file in workspace")
 // 	}
 
 // 	tree := GetRoot()
