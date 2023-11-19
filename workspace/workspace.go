@@ -23,7 +23,7 @@ var path string
 
 func init() {
 	allWorkspaces = make(map[string]Workspace)
-	path = "./file/"
+	path = "./files/"
 }
 
 func updateWorkspace(curWorkspace Workspace) {

@@ -17,10 +17,10 @@ type load struct {
 func (c *load) Execute() error {
 	// filepath := "../file/testFiles.txt"
 	// 通过main.go运行，相对路径名要从main.go所在的目录开始！！！
-	if strings.HasSuffix(c.filepath, "file/") {
+	if strings.HasSuffix(c.filepath, "files/") {
 		c.filepath = "./" + c.filepath
 	} else {
-		c.filepath = "./file/" + c.filepath
+		c.filepath = "./files/" + c.filepath
 	}
 
 	curFile.fileName = c.filepath

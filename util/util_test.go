@@ -13,7 +13,7 @@ func TestOutput(t *testing.T) {
 	_ = Output("\n", nil)
 	_ = Output("test", nil)
 
-	filepath := "../file/test_output.txt"
+	filepath := "../files/test_output.txt"
 	file, err := os.OpenFile(filepath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		panic(err)

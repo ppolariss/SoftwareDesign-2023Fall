@@ -3,6 +3,7 @@ package command
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"os"
 	"strings"
 
@@ -51,6 +52,7 @@ func Do() error {
 		command, err := ReadCommand(scanner)
 		if err != nil || command == nil {
 			// if(str!="exit")
+			fmt.Println("invalid command")
 			break
 		}
 		err = command.Execute()
@@ -65,7 +67,7 @@ func Do() error {
 	}
 	if err != nil {
 		// 错误日志
-		err = NotifyObserver(nil)
+		_ = NotifyObserver(nil)
 	}
 	return err
 }

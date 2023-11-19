@@ -10,8 +10,24 @@ import (
 )
 
 func TestCommand(t *testing.T) {
+	dirPaths := []string{
+		"./files",
+		"./testFiles",
+		"./logFiles",
+	}
+	for _, dirPath := range dirPaths {
+		if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+			// 目录不存在，创建目录
+			err := os.Mkdir(dirPath, 0755) // 0755 是权限设置，可以根据需要更改
+			if err != nil {
+				t.Fatal()
+				return
+			}
+		}
+	}
+	//_ = os.Mkdir(dirPath, os.ModePerm)
 	for i := 1; i <= 5; i++ {
-		filePath := "./file/test" + strconv.Itoa(i) + ".md"
+		filePath := "./files/test" + strconv.Itoa(i) + ".md"
 		// os.Remove(file_path)
 		f, err := os.OpenFile(filePath, os.O_RDONLY|os.O_CREATE, 0666)
 		if err != nil {
