@@ -2,25 +2,18 @@ package workspace
 
 import (
 	"bufio"
-	"design/command"
+	. "design/interfaces"
 	e "design/myError"
 	"fmt"
 	"os"
 )
 
-type WorkspaceInf interface {
-	// SetArgs([]string) error
-	// Execute() error
-	// CallSelf() string
-	load(fileName string) (Workspace, error)
-}
-
 type Workspace struct {
-	fileName               string
-	dirty                  bool // if dirty, save to file
-	undoableCommandHistory []command.UndoableCommand
-	undoableCommandPointer int
-	fileContent            []string
+	FileName               string
+	Dirty                  bool // if Dirty, save to file
+	UndoableCommandHistory []UndoableCommand
+	UndoableCommandPointer int
+	FileContent            []string
 }
 
 var CurrentWorkspace Workspace
@@ -33,9 +26,9 @@ func init() {
 }
 
 func updateWorkspace(curWorkspace Workspace) {
-	_, ok := allWorkspaces[curWorkspace.fileName]
+	_, ok := allWorkspaces[curWorkspace.FileName]
 	if ok {
-		allWorkspaces[curWorkspace.fileName] = curWorkspace
+		allWorkspaces[curWorkspace.FileName] = curWorkspace
 	}
 	// if nil
 	// else ?
@@ -54,11 +47,11 @@ func (curWorkspace *Workspace) Load(fileName string) (*Workspace, error) {
 	}
 
 	ws = Workspace{
-		fileName:               fileName,
-		dirty:                  false,
-		undoableCommandHistory: make([]command.UndoableCommand, 0),
-		undoableCommandPointer: 0,
-		fileContent:            make([]string, 0),
+		FileName:               fileName,
+		Dirty:                  false,
+		UndoableCommandHistory: make([]UndoableCommand, 0),
+		UndoableCommandPointer: 0,
+		FileContent:            make([]string, 0),
 	}
 
 	filePath := path + fileName
@@ -82,7 +75,7 @@ func (curWorkspace *Workspace) Load(fileName string) (*Workspace, error) {
 			if content == "" {
 				break
 			} else {
-				ws.fileContent = append(ws.fileContent, content)
+				ws.FileContent = append(ws.FileContent, content)
 				break
 			}
 			// 注意此处还要处理最后一行
@@ -90,7 +83,7 @@ func (curWorkspace *Workspace) Load(fileName string) (*Workspace, error) {
 		// if content == "" {
 		// 	continue
 		// }
-		ws.fileContent = append(ws.fileContent, content)
+		ws.FileContent = append(ws.FileContent, content)
 	}
 	CurrentWorkspace = ws
 	return &CurrentWorkspace, nil
@@ -113,7 +106,7 @@ func (curWorkspace *Workspace) Close(fileName string) error {
 	if curWorkspace == nil {
 		return e.NewMyError("close: curWorkspace is nil")
 	}
-	if curWorkspace.dirty {
+	if curWorkspace.Dirty {
 		fmt.Println("Do you want to save the current workspace [Y\\N] ？")
 		var input string
 		_, err := fmt.Scanln(&input)
@@ -132,4 +125,11 @@ func (curWorkspace *Workspace) Close(fileName string) error {
 	}
 	return e.NewMyError("close: no such file")
 
+}
+
+func (curWorkspace *Workspace) ListWorkspace() error {
+	for fileName, _ := range allWorkspaces {
+		fmt.Println(fileName)
+	}
+	return nil
 }

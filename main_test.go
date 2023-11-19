@@ -29,14 +29,14 @@ func TestCommand(t *testing.T) {
 	}()
 
 	for i := 1; i <= 5; i++ {
-		inputFile, err := os.Open("test/test" + strconv.Itoa(i))
+		inputFile, err := os.Open("testFiles/test" + strconv.Itoa(i))
 		if err != nil {
 			t.Fatal(err)
 		}
 
 		os.Stdin = inputFile
 
-		tmpfile, err := os.Create("test/result" + strconv.Itoa(i))
+		tmpfile, err := os.Create("testFiles/result" + strconv.Itoa(i))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -51,8 +51,8 @@ func TestCommand(t *testing.T) {
 	}
 
 	for i := 1; i <= 5; i++ {
-		filePath1 := "./test/result" + strconv.Itoa(i)
-		filePath2 := "./test/stdresult" + strconv.Itoa(i)
+		filePath1 := "./testFiles/result" + strconv.Itoa(i)
+		filePath2 := "./testFiles/stdresult" + strconv.Itoa(i)
 		f1, err := os.Open(filePath1)
 		if err != nil {
 			t.Fatal(err)
@@ -73,8 +73,8 @@ func TestCommand(t *testing.T) {
 			t.Fatal(i, s1, s2)
 		}
 
-		// // file_path1 := "./test/" + strconv.Itoa(i)
-		// // file_path2 := "./test/klsjfkfs hksdhfjs"
+		// // file_path1 := "./testFiles/" + strconv.Itoa(i)
+		// // file_path2 := "./testFiles/klsjfkfs hksdhfjs"
 		// content1, err := os.ReadFile(file_path1)
 		// if err != nil {
 		// 	panic(err)
@@ -92,13 +92,13 @@ func TestCommand(t *testing.T) {
 		// 	t.Fatal("\n", normalizedContent1, normalizedContent2)
 		// }
 
-		// // file1, err := os.ReadFile("./test/result" + strconv.Itoa(i) )
-		// // file2, _ := os.ReadFile("./test/stdresult" + strconv.Itoa(i) )
+		// // file1, err := os.ReadFile("./testFiles/result" + strconv.Itoa(i) )
+		// // file2, _ := os.ReadFile("./testFiles/stdresult" + strconv.Itoa(i) )
 		// // if err != nil {
 		// // 	t.Fatal(err)
 		// // }
 		// // if !bytes.Equal(file1, file2) {
-		// // 	// t.Fatal("test" + strconv.Itoa(i) + " failed")
+		// // 	// t.Fatal("testFiles" + strconv.Itoa(i) + " failed")
 		// // }
 	}
 }

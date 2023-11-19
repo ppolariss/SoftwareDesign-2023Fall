@@ -13,7 +13,7 @@ type load struct {
 }
 
 func (c *load) Execute() error {
-	// filepath := "../file/test.txt"
+	// filepath := "../file/testFiles.txt"
 	// 通过main.go运行，相对路径名要从main.go所在的目录开始！！！
 	if len(c.filepath) > 5 && c.filepath[:5] == "file/" {
 		c.filepath = "./" + c.filepath

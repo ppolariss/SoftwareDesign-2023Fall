@@ -2,22 +2,13 @@ package command
 
 import (
 	"bufio"
+	"design/commandManager"
+	. "design/interfaces"
+	"design/log"
 	e "design/myError"
 	"os"
 	"strings"
-	"sync"
 )
-
-type Command interface {
-	SetArgs([]string) error
-	Execute() error
-	CallSelf() string
-}
-
-type UndoableCommand interface {
-	Command
-	UndoExecute() error
-}
 
 type fileHistory struct {
 	fileName string
@@ -26,7 +17,6 @@ type fileHistory struct {
 
 var commandsMapper map[string]Command
 var curFile fileHistory
-var once sync.Once
 
 func init() {
 	commandsMapper = make(map[string]Command)
@@ -36,17 +26,18 @@ func init() {
 	commandsMapper["delete"] = &deleteCommand{}
 	commandsMapper["append-head"] = &appendHead{}
 	commandsMapper["append-tail"] = &appendTail{}
-	commandsMapper["undo"] = &undo{}
-	commandsMapper["redo"] = &redo{}
+	commandsMapper["undo"] = &commandManager.Undo{}
+	commandsMapper["redo"] = &commandManager.Redo{}
 	commandsMapper["list"] = &list{}
 	commandsMapper["list-tree"] = &listTree{}
 	commandsMapper["dir-tree"] = &dirTree{}
-	commandsMapper["history"] = &history{}
+	commandsMapper["history"] = &log.History{}
 	commandsMapper["stats"] = &stats{}
+	commandsMapper["ls"] = &ls{}
 
-	registerObserver(&recordUndoableCommand{})
-	registerObserver(&log{})
-	registerObserver(&logFile{})
+	RegisterObserver(&commandManager.RecordUndoableCommand{})
+	RegisterObserver(&log.Log{})
+	RegisterObserver(&logFile{})
 }
 
 // Do must get input outside
@@ -66,14 +57,14 @@ func Do() error {
 			break
 		}
 
-		err = notifyObserver(command)
+		err = NotifyObserver(command)
 		if err != nil {
 			return err
 		}
 	}
 	if err != nil {
 		// 错误日志
-		err = notifyObserver(nil)
+		err = NotifyObserver(nil)
 	}
 	return err
 }

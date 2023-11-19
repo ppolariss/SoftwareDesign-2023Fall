@@ -1,16 +1,16 @@
-package command
+package interfaces
 
 import e "design/myError"
 
 type observer interface {
-	update(command Command) error
+	Update(command Command) error
 }
 
 var observers []observer
 
-func notifyObserver(command Command) error {
+func NotifyObserver(command Command) error {
 	for _, o := range observers {
-		err := o.update(command)
+		err := o.Update(command)
 		if err != nil {
 			return e.NewMyError("notifyObserver error")
 		}
@@ -18,7 +18,7 @@ func notifyObserver(command Command) error {
 	return nil
 }
 
-func registerObserver(o observer) {
+func RegisterObserver(o observer) {
 	observers = append(observers, o)
 }
 
