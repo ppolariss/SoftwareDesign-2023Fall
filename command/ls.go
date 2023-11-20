@@ -1,6 +1,7 @@
 package command
 
 import (
+	"design/output"
 	"errors"
 )
 
@@ -15,8 +16,7 @@ func (c *ls) SetArgs(args []string) error {
 }
 
 func (c *ls) Execute() error {
-	// TODO
-	return nil
+	return output.Ls("./files/")
 }
 func (c *ls) CallSelf() string {
 	return "ls"

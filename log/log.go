@@ -18,8 +18,9 @@ func (l *Log) Update(command Command) error {
 	var callSelf string
 	if command == nil {
 		callSelf = "error"
+	} else {
+		callSelf = command.CallSelf()
 	}
-	callSelf = command.CallSelf()
 
 	// global variable of logger
 	f, err := os.OpenFile("./logFiles/log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)

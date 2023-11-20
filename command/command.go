@@ -49,7 +49,8 @@ func Do() error {
 
 	var err error
 	for scanner.Scan() {
-		command, err := ReadCommand(scanner)
+		var command Command
+		command, err = ReadCommand(scanner)
 		if err != nil || command == nil {
 			// if(str!="exit")
 			fmt.Println("invalid command")

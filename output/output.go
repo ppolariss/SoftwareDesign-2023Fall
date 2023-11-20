@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	. "design/interfaces"
 	"design/util"
 )
 
@@ -86,22 +87,23 @@ func OutputAsFile(para int, fileContent []string, filePath string) error {
 	return nil
 }
 
-func recurOutputAsTree(prefix string, node *Node) error {
-	fmt.Print(prefix)
-	rank, err := getRankofParent(node)
-	if err != nil {
-		return err
-	} else if rank == -1 {
-		fmt.Print(endBranch)
-		prefix += space
-	} else {
-		fmt.Print(branch)
-		prefix += notSpace
+func recurOutputAsTree(prefix string, treeOut TreeOut) error {
+	if treeOut == nil {
+		return nil
 	}
-	fmt.Println(node.content)
-
-	for _, child := range node.children {
-		err = recurOutputAsTree(prefix, child)
+	l := len(treeOut.Children())
+	for i, child := range treeOut.Children() {
+		fmt.Print(prefix)
+		var err error
+		if i != l-1 {
+			fmt.Print(branch)
+			fmt.Println(child.Name())
+			err = recurOutputAsTree(prefix+notSpace, child)
+		} else {
+			fmt.Print(endBranch)
+			fmt.Println(child.Name())
+			err = recurOutputAsTree(prefix+space, child)
+		}
 		if err != nil {
 			return err
 		}
@@ -119,12 +121,12 @@ func OutputAsTree(fileContent []string) error {
 	}
 
 	tree := GetRoot()
-	for _, child := range tree.children {
-		err := recurOutputAsTree("", child)
-		if err != nil {
-			return err
-		}
+	//for _, child := range tree.children {
+	err = recurOutputAsTree("", tree)
+	if err != nil {
+		return err
 	}
+	//}
 	return nil
 }
 
@@ -143,12 +145,12 @@ func OutputAsDir(content string, fileContent []string) error {
 	}
 	fmt.Print(endBranch)
 	fmt.Println(node.content)
-	for _, child := range node.children {
-		err := recurOutputAsTree(space, child)
-		if err != nil {
-			return err
-		}
+	//for _, child := range node.children {
+	err = recurOutputAsTree(space, node)
+	if err != nil {
+		return err
 	}
+	//}
 	return nil
 }
 
@@ -179,3 +181,17 @@ func OutputAsDir(content string, fileContent []string) error {
 // │ └── 3. 组合模式
 // └── ⼯具箱
 // └── Adobe
+
+func (node *Node) Name() string {
+	return node.content
+}
+
+func (node *Node) Children() []TreeOut {
+	children := make([]TreeOut, len(node.children))
+	for i, child := range node.children {
+		//children = append(children, child)
+		children[i] = child
+	}
+	return children
+	//return node.children
+}
