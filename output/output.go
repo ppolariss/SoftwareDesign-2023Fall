@@ -31,7 +31,7 @@ func recurOutputAsFile(node *util.Node, file *os.File) {
 }
 
 // OutputAsFile para: 0: output to terminal; 1: output to file
-func OutputAsFile(para int, fileContent []string, filePath string) error {
+func AsFile(para int, fileContent []string, filePath string) error {
 	err := util.String2tree(fileContent)
 	if err != nil {
 		return err
@@ -93,7 +93,7 @@ func recurOutputAsTree(prefix string, treeOut TreeOut) error {
 	return nil
 }
 
-func OutputAsTree(fileContent []string) error {
+func AsTree(fileContent []string) error {
 	err := util.String2tree(fileContent)
 	if err != nil {
 		return err
@@ -112,7 +112,7 @@ func OutputAsTree(fileContent []string) error {
 	return nil
 }
 
-func OutputAsDir(content string, fileContent []string) error {
+func AsDir(content string, fileContent []string) error {
 	err := util.String2tree(fileContent)
 	if err != nil {
 		return err

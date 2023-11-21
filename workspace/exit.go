@@ -5,6 +5,23 @@ import (
 	"fmt"
 )
 
+type Exit struct {
+}
+
+func (e *Exit) Execute() error {
+	return CurWorkspace.Exit()
+}
+func (e *Exit) SetArgs(args []string) error {
+	if len(args) != 1 {
+		return errors.New("exit: args error")
+	}
+	return nil
+}
+
+func (e *Exit) CallSelf() string {
+	return "exit"
+}
+
 func (curWorkspace *Workspace) Exit() error {
 	var dirty bool
 	for _, workspace := range allWorkspaces {
@@ -40,7 +57,7 @@ func (curWorkspace *Workspace) Exit() error {
 	}
 
 	allWorkspaces = make(map[string]Workspace)
-	//ToDo
+
 	*curWorkspace = Workspace{}
 	return nil
 }

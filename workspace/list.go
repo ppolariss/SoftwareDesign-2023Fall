@@ -1,6 +1,9 @@
 package workspace
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 //	test1
 //
@@ -9,7 +12,24 @@ var space = "  "
 var arrow = "->"
 var star = " *"
 
-func (curWorkspace *Workspace) List() {
+type List struct {
+}
+
+func (l *List) Execute() error {
+	return CurWorkspace.List()
+}
+func (l *List) SetArgs(args []string) error {
+	if len(args) != 1 {
+		return errors.New("list-workspace: args error")
+	}
+	return nil
+}
+
+func (l *List) CallSelf() string {
+	return "list-workspace"
+}
+
+func (curWorkspace *Workspace) List() error {
 	for _, workspace := range allWorkspaces {
 		if workspace.FileName == curWorkspace.FileName {
 			fmt.Print(arrow, workspace.FileName)
@@ -22,4 +42,5 @@ func (curWorkspace *Workspace) List() {
 			fmt.Println()
 		}
 	}
+	return nil
 }

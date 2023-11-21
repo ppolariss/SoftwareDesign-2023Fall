@@ -5,7 +5,24 @@ import (
 	"fmt"
 )
 
-func (curWorkspace *Workspace) Close(fileName string) error {
+type Close struct {
+}
+
+func (c *Close) Execute() error {
+	return CurWorkspace.Close()
+}
+func (c *Close) SetArgs(args []string) error {
+	if len(args) != 1 {
+		return errors.New("close: args error")
+	}
+	return nil
+}
+
+func (c *Close) CallSelf() string {
+	return "close"
+}
+
+func (curWorkspace *Workspace) Close() error {
 	if isEmpty(curWorkspace) {
 		return errors.New("close: curWorkspace is nil")
 	}
@@ -31,10 +48,10 @@ func (curWorkspace *Workspace) Close(fileName string) error {
 		}
 	}
 
-	_, ok := allWorkspaces[fileName]
+	_, ok := allWorkspaces[curWorkspace.FileName]
 	if ok {
-		delete(allWorkspaces, fileName)
-		//ToDo
+		delete(allWorkspaces, curWorkspace.FileName)
+
 		*curWorkspace = Workspace{}
 		return nil
 	}

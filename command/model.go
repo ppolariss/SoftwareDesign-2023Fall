@@ -4,24 +4,27 @@ import (
 	"design/commandManager"
 	. "design/interfaces"
 	"design/log"
+	"design/output"
 	"design/workspace"
 )
 
-var curWorkspace = &workspace.Workspace{}
-
 var commandsMapper = map[string]Command{
-	"load":        &load{},
-	"save":        &save{},
-	"insert":      &insert{},
-	"delete":      &deleteCommand{},
-	"append-head": &appendHead{},
-	"append-tail": &appendTail{},
-	"undo":        &commandManager.Undo{},
-	"redo":        &commandManager.Redo{},
-	"list":        &list{},
-	"list-tree":   &listTree{},
-	"dir-tree":    &dirTree{},
-	"history":     &log.History{},
-	"stats":       &stats{},
-	"ls":          &ls{},
+	"insert":         &insert{},
+	"delete":         &deleteCommand{},
+	"append-head":    &appendHead{},
+	"append-tail":    &appendTail{},
+	"load":           &workspace.Load{},
+	"save":           &workspace.Save{},
+	"exit":           &workspace.Exit{},
+	"close":          &workspace.Close{},
+	"list-workspace": &workspace.List{},
+	"open":           &workspace.Open{},
+	"undo":           &commandManager.Undo{},
+	"redo":           &commandManager.Redo{},
+	"history":        &log.History{},
+	"stats":          &log.Stats{},
+	"list":           &List{},
+	"list-tree":      &ListTree{},
+	"dir-tree":       &DirTree{},
+	"ls":             &output.Ls{},
 }

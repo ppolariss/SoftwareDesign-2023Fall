@@ -16,3 +16,4 @@ type Workspace struct {
 // var CurrentWorkspace *Workspace
 var allWorkspaces map[string]Workspace
 var path string
+var CurWorkspace = &Workspace{}

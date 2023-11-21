@@ -1,6 +1,7 @@
 package command
 
 import (
+	"design/workspace"
 	"errors"
 
 	"design/editor"
@@ -16,7 +17,7 @@ type deleteCommand struct {
 
 func (c *deleteCommand) Execute() error {
 	var err error
-	c.lineNum, c.content, err = editor.Delete(c.lineNum, c.content, &curWorkspace.FileContent)
+	c.lineNum, c.content, err = editor.Delete(c.lineNum, c.content, &workspace.CurWorkspace.FileContent)
 	if err != nil {
 		return err
 	}
@@ -34,7 +35,7 @@ func (c *deleteCommand) SetArgs(args []string) error {
 	if len(args) == 2 {
 		num, err := strconv.Atoi(args[1])
 		if err == nil && num > 0 {
-			if num > len(curWorkspace.FileContent) {
+			if num > len(workspace.CurWorkspace.FileContent) {
 				return errors.New("delete: line number error")
 			}
 			c.lineNum = num

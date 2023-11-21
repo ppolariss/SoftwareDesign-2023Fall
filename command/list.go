@@ -1,64 +1,66 @@
 package command
 
 import (
+	"design/output"
+	"design/workspace"
 	"errors"
 	"strings"
-
-	"design/output"
 )
 
-type list struct {
+type List struct {
 }
 
-func (c *list) Execute() error {
-	return output.OutputAsFile(0, curWorkspace.FileContent, "")
+func (c *List) Execute() error {
+	return output.AsFile(0, workspace.CurWorkspace.FileContent, "")
 }
 
-func (c *list) SetArgs(args []string) error {
+func (c *List) SetArgs(args []string) error {
 	if len(args) != 1 {
 		return errors.New("list: args error")
 	}
 	return nil
 }
 
-func (c *list) CallSelf() string {
+func (c *List) CallSelf() string {
 	return "list"
 }
 
-type listTree struct{}
+type ListTree struct{}
 
-func (c *listTree) Execute() error {
-	return output.OutputAsTree(curWorkspace.FileContent)
+func (c *ListTree) Execute() error {
+	return output.AsTree(workspace.CurWorkspace.FileContent)
 }
-func (c *listTree) SetArgs(args []string) error {
+func (c *ListTree) SetArgs(args []string) error {
 	if len(args) != 1 {
-		return errors.New("list_tree: args error")
+		return errors.New("list-tree: args error")
 	}
 	return nil
 }
-func (c *listTree) CallSelf() string {
+func (c *ListTree) CallSelf() string {
 	return "list-tree"
 }
 
-type dirTree struct {
+type DirTree struct {
 	directory string
 }
 
-func (c *dirTree) Execute() error {
+func (c *DirTree) Execute() error {
 	if c.directory == "" {
-		return output.OutputAsTree(curWorkspace.FileContent)
+		return output.AsTree(workspace.CurWorkspace.FileContent)
 	} else {
-		return output.OutputAsDir(c.directory, curWorkspace.FileContent)
+		return output.AsDir(c.directory, workspace.CurWorkspace.FileContent)
 	}
 }
 
-func (c *dirTree) SetArgs(args []string) error {
+func (c *DirTree) SetArgs(args []string) error {
 	if len(args) != 1 {
 		sliceArgs := args[1:]
 		c.directory = strings.Join(sliceArgs, " ")
+	} else {
+		return errors.New("dir-tree: args error")
 	}
 	return nil
 }
-func (c *dirTree) CallSelf() string {
+func (c *DirTree) CallSelf() string {
 	return "dir-tree"
 }

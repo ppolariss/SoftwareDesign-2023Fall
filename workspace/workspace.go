@@ -1,7 +1,6 @@
 package workspace
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -18,13 +17,6 @@ func updateWorkspace(curWorkspace *Workspace) {
 	if ok {
 		allWorkspaces[curWorkspace.FileName] = *curWorkspace
 	}
-}
-
-func (curWorkspace *Workspace) ListWorkspace() error {
-	for fileName := range allWorkspaces {
-		fmt.Println(fileName)
-	}
-	return nil
 }
 
 func GetFilePath(fileName string) string {

@@ -1,6 +1,7 @@
 package command
 
 import (
+	"design/workspace"
 	"errors"
 
 	"design/editor"
@@ -17,7 +18,7 @@ type insert struct {
 
 func (c *insert) Execute() error {
 	var err error
-	c.lineNum, err = editor.Insert(c.lineNum, c.content, &curWorkspace.FileContent)
+	c.lineNum, err = editor.Insert(c.lineNum, c.content, &workspace.CurWorkspace.FileContent)
 	return err
 }
 
@@ -39,7 +40,7 @@ func (c *insert) SetArgs(args []string) error {
 		// The line number is specified
 		// in order not to couple the bottom
 		//
-		if num <= 0 || num > len(curWorkspace.FileContent)+1 {
+		if num <= 0 || num > len(workspace.CurWorkspace.FileContent)+1 {
 			return errors.New("insert: line number error")
 		}
 		c.lineNum = num
@@ -71,7 +72,7 @@ func (c *appendHead) Execute() error {
 	// 是否会破坏文本结构
 	// 如果破坏，在哪里报错
 
-	_, err := editor.Insert(1, c.content, &curWorkspace.FileContent)
+	_, err := editor.Insert(1, c.content, &workspace.CurWorkspace.FileContent)
 	return err
 }
 
@@ -102,7 +103,7 @@ type appendTail struct {
 
 func (c *appendTail) Execute() error {
 	var err error
-	c.lineNum, err = editor.Insert(-1, c.content, &curWorkspace.FileContent)
+	c.lineNum, err = editor.Insert(-1, c.content, &workspace.CurWorkspace.FileContent)
 	return err
 }
 

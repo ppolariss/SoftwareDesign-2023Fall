@@ -65,7 +65,7 @@ func recurGetNodeByContent(content string, node *Node, nth int) (int, *Node) {
 	return 0, nil
 }
 
-// return nth and node
+// GetNodeByContent return nth and node
 func GetNodeByContent(content string) (int, *Node) {
 	root := GetRoot()
 	for _, child := range root.Children {

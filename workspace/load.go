@@ -8,6 +8,29 @@ import (
 	"os"
 )
 
+type Load struct {
+	filepath string
+}
+
+func (c *Load) Execute() error {
+	// filepath := "../file/testFiles.txt"
+	// 通过main.go运行，相对路径名要从main.go所在的目录开始！！！
+
+	return CurWorkspace.Load(c.filepath)
+}
+
+func (c *Load) SetArgs(args []string) error {
+	if len(args) != 2 {
+		return errors.New("load: args error")
+	}
+	c.filepath = args[1]
+	return nil
+}
+
+func (c *Load) CallSelf() string {
+	return "load " + c.filepath
+}
+
 func (curWorkspace *Workspace) Load(fileName string) error {
 	ws, ok := allWorkspaces[fileName]
 	if ok {

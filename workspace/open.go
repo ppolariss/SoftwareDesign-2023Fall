@@ -2,6 +2,25 @@ package workspace
 
 import "errors"
 
+type Open struct {
+	fileName string
+}
+
+func (o *Open) Execute() error {
+	return CurWorkspace.Open(o.fileName)
+}
+func (o *Open) SetArgs(args []string) error {
+	if len(args) != 2 {
+		return errors.New("open: args error")
+	}
+	o.fileName = args[1]
+	return nil
+}
+
+func (o *Open) CallSelf() string {
+	return "open " + o.fileName
+}
+
 func (curWorkspace *Workspace) Open(fileName string) error {
 	if !isEmpty(curWorkspace) {
 		updateWorkspace(curWorkspace)
