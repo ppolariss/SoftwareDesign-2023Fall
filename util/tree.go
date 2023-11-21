@@ -1,6 +1,7 @@
-package output
+package util
 
 import (
+	. "design/interfaces"
 	"errors"
 	"strconv"
 	"strings"
@@ -8,10 +9,10 @@ import (
 )
 
 type Node struct {
-	content  string
-	children []*Node
+	Content  string
+	Children []*Node
 	parent   *Node
-	grade    int
+	Grade    int
 }
 
 var root *Node
@@ -29,7 +30,7 @@ func IsInit() bool {
 
 func GetRoot() *Node {
 	once.Do(func() {
-		root = &Node{content: "root", children: []*Node{}, parent: nil, grade: 0}
+		root = &Node{Content: "root", Children: []*Node{}, parent: nil, Grade: 0}
 	})
 	return root
 }
@@ -54,10 +55,10 @@ func GetGrade(content string) int {
 // para content to find, node to start, nth
 // return nth and node
 func recurGetNodeByContent(content string, node *Node, nth int) (int, *Node) {
-	if transNum(node.content) == content {
+	if transNum(node.Content) == content {
 		return nth, node
 	}
-	for _, child := range node.children {
+	for _, child := range node.Children {
 		nth++
 		nth, retNode := recurGetNodeByContent(content, child, nth)
 		if retNode != nil {
@@ -68,9 +69,9 @@ func recurGetNodeByContent(content string, node *Node, nth int) (int, *Node) {
 }
 
 // return nth and node
-func getNodeByContent(content string) (int, *Node) {
+func GetNodeByContent(content string) (int, *Node) {
 	root := GetRoot()
-	for _, child := range root.children {
+	for _, child := range root.Children {
 		nth, retNode := recurGetNodeByContent(content, child, 1)
 		if retNode != nil {
 			return nth, retNode
@@ -96,9 +97,9 @@ func traceback(currentNode *Node, newNode *Node) error {
 		return errors.New("traceback(): currentNode == nil || newNode == nil")
 	}
 	// level down
-	if (newNode.grade == 0 || newNode.grade > currentNode.grade) && currentNode.grade != 0 {
+	if (newNode.Grade == 0 || newNode.Grade > currentNode.Grade) && currentNode.Grade != 0 {
 		newNode.parent = currentNode
-		currentNode.children = append(currentNode.children, newNode)
+		currentNode.Children = append(currentNode.Children, newNode)
 		// if newNode.grade == 0 || newNode.grade == currentNode.grade+1 {
 		// 	newNode.parent = currentNode
 		// 	currentNode.children = append(currentNode.children, newNode)
@@ -109,23 +110,23 @@ func traceback(currentNode *Node, newNode *Node) error {
 
 		// level up
 		// due to currentNode is changed, so we need to record
-		for i, times := 0, currentNode.grade-newNode.grade+1; i < times; i++ {
+		for i, times := 0, currentNode.Grade-newNode.Grade+1; i < times; i++ {
 			currentNode = currentNode.parent
 			if currentNode == nil {
 				return errors.New("traceback(): currentNode.parent == nil")
 			}
 		}
 		newNode.parent = currentNode
-		currentNode.children = append(currentNode.children, newNode)
+		currentNode.Children = append(currentNode.Children, newNode)
 		// fmt.Println(currentNode.content)
 	}
 	return nil
 }
 
-func string2tree(ss []string) error {
+func String2tree(ss []string) error {
 	current := GetRoot()
-	if current.children != nil {
-		current.children = []*Node{}
+	if current.Children != nil {
+		current.Children = []*Node{}
 	}
 
 	for _, content := range ss {
@@ -145,7 +146,7 @@ func string2tree(ss []string) error {
 // return the node and the number of # if valid
 func ParseToNode(content string) (*Node, int) {
 	grade, content := parseToString(content)
-	node := Node{content: content, children: []*Node{}, parent: nil, grade: grade}
+	node := Node{Content: content, Children: []*Node{}, parent: nil, Grade: grade}
 	return &node, grade
 }
 
@@ -171,4 +172,18 @@ func transNum(s string) string {
 		return s
 	}
 	return strings.Join(ss[1:], " ")
+}
+
+func (node *Node) Name() string {
+	return node.Content
+}
+
+func (node *Node) GetChildren() []TreeOut {
+	children := make([]TreeOut, len(node.Children))
+	for i, child := range node.Children {
+		//children = append(children, child)
+		children[i] = child
+	}
+	return children
+	//return node.children
 }

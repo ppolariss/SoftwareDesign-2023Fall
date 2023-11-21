@@ -1,9 +1,8 @@
 package editor
 
 import (
+	"design/util"
 	"errors"
-
-	"design/output"
 )
 
 // Delete para line_num or content
@@ -11,7 +10,7 @@ import (
 func Delete(lineNum int, content string) (int, string, error) {
 
 	var originContent string
-	if !output.IsInit() {
+	if !util.IsInit() {
 		return 0, "", errors.New("delete: No file in workspace")
 	}
 	if lineNum > 0 {

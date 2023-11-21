@@ -24,7 +24,7 @@ func (file *File) Name() string {
 	return file.name
 }
 
-func (file *File) Children() []TreeOut {
+func (file *File) GetChildren() []TreeOut {
 	fileInfo, err := os.Stat(file.path)
 	if err != nil {
 		return nil
@@ -56,31 +56,32 @@ func (file *File) Children() []TreeOut {
 
 func Ls(path string) error {
 	var err error
-	if path == "./" {
-		path, err = os.Getwd()
-		if err != nil {
-			return err
-		}
-	}
-	//fileInfo, err := os.Stat(path)
-	//if err != nil {
-	//	return err
-	//}
-
-	//dirEntry := fs.FileInfoToDirEntry(fileInfo)
-
-	//dirEntry, ok := fileInfo.(fs.DirEntry)
-	//if !ok {
-	//	return errors.New("not a directory")
-	//}
-
-	//entry, err := os.ReadDir(path)
-	//if err != nil {
-	//	return err
-	//}
 	err = recurOutputAsTree("", &File{path: path})
 	if err != nil {
 		return err
 	}
 	return nil
 }
+
+//if path == "./" {
+//	path, err = os.Getwd()
+//	if err != nil {
+//		return err
+//	}
+//}
+//fileInfo, err := os.Stat(path)
+//if err != nil {
+//	return err
+//}
+
+//dirEntry := fs.FileInfoToDirEntry(fileInfo)
+
+//dirEntry, ok := fileInfo.(fs.DirEntry)
+//if !ok {
+//	return errors.New("not a directory")
+//}
+
+//entry, err := os.ReadDir(path)
+//if err != nil {
+//	return err
+//}

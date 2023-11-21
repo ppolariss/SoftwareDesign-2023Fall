@@ -2,5 +2,5 @@ package interfaces
 
 type TreeOut interface {
 	Name() string
-	Children() []TreeOut
+	GetChildren() []TreeOut
 }

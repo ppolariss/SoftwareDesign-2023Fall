@@ -14,9 +14,9 @@ const branch = "├── "
 const space = "    "
 const notSpace = "│   "
 
-func recurOutputAsFile(node *Node, file *os.File) {
-	if node.grade != 0 {
-		for i := 0; i < node.grade; i++ {
+func recurOutputAsFile(node *util.Node, file *os.File) {
+	if node.Grade != 0 {
+		for i := 0; i < node.Grade; i++ {
 			_ = util.Output("#", file)
 
 		}
@@ -24,23 +24,23 @@ func recurOutputAsFile(node *Node, file *os.File) {
 
 	}
 
-	_ = util.Output(node.content+"\n", file)
-	for _, child := range node.children {
+	_ = util.Output(node.Content+"\n", file)
+	for _, child := range node.Children {
 		recurOutputAsFile(child, file)
 	}
 }
 
 // OutputAsFile para: 0: output to terminal; 1: output to file
 func OutputAsFile(para int, fileContent []string, filePath string) error {
-	err := string2tree(fileContent)
+	err := util.String2tree(fileContent)
 	if err != nil {
 		return err
 	}
-	if !IsInit() {
+	if !util.IsInit() {
 		return errors.New("OutputAsFile(): No file in workspace")
 	}
 
-	tree := GetRoot()
+	tree := util.GetRoot()
 	if para != 0 {
 		// 向文件输入
 		file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
@@ -54,7 +54,7 @@ func OutputAsFile(para int, fileContent []string, filePath string) error {
 			return errors.New(err.Error())
 		}
 
-		for _, child := range tree.children {
+		for _, child := range tree.Children {
 			recurOutputAsFile(child, file)
 		}
 		defer func(file *os.File) {
@@ -62,7 +62,7 @@ func OutputAsFile(para int, fileContent []string, filePath string) error {
 		}(file)
 	} else {
 		// 向终端输入
-		for _, child := range tree.children {
+		for _, child := range tree.Children {
 			recurOutputAsFile(child, nil)
 		}
 	}
@@ -73,8 +73,8 @@ func recurOutputAsTree(prefix string, treeOut TreeOut) error {
 	if treeOut == nil {
 		return nil
 	}
-	l := len(treeOut.Children())
-	for i, child := range treeOut.Children() {
+	l := len(treeOut.GetChildren())
+	for i, child := range treeOut.GetChildren() {
 		fmt.Print(prefix)
 		var err error
 		if i != l-1 {
@@ -94,15 +94,15 @@ func recurOutputAsTree(prefix string, treeOut TreeOut) error {
 }
 
 func OutputAsTree(fileContent []string) error {
-	err := string2tree(fileContent)
+	err := util.String2tree(fileContent)
 	if err != nil {
 		return err
 	}
-	if !IsInit() {
+	if !util.IsInit() {
 		return errors.New("OutputAsTree(): No file in workspace")
 	}
 
-	tree := GetRoot()
+	tree := util.GetRoot()
 	//for _, child := range tree.children {
 	err = recurOutputAsTree("", tree)
 	if err != nil {
@@ -113,20 +113,20 @@ func OutputAsTree(fileContent []string) error {
 }
 
 func OutputAsDir(content string, fileContent []string) error {
-	err := string2tree(fileContent)
+	err := util.String2tree(fileContent)
 	if err != nil {
 		return err
 	}
-	if !IsInit() {
+	if !util.IsInit() {
 		return errors.New("OutputAsDir(): No file in workspace")
 	}
 
-	_, node := getNodeByContent(content)
+	_, node := util.GetNodeByContent(content)
 	if node == nil {
 		return errors.New("OutputAsDir(): No such node")
 	}
 	fmt.Print(endBranch)
-	fmt.Println(node.content)
+	fmt.Println(node.Content)
 	//for _, child := range node.children {
 	err = recurOutputAsTree(space, node)
 	if err != nil {
@@ -150,17 +150,3 @@ func OutputAsDir(content string, fileContent []string) error {
 // │ └── 3. 组合模式
 // └── ⼯具箱
 // └── Adobe
-
-func (node *Node) Name() string {
-	return node.content
-}
-
-func (node *Node) Children() []TreeOut {
-	children := make([]TreeOut, len(node.children))
-	for i, child := range node.children {
-		//children = append(children, child)
-		children[i] = child
-	}
-	return children
-	//return node.children
-}
