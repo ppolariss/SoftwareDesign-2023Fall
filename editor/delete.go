@@ -30,9 +30,6 @@ func Delete(lineNum int, content string, fileContent *[]string) (int, string, er
 		originContent = (*fileContent)[lineNum-1]
 	}
 	*fileContent = append((*fileContent)[:lineNum-1], (*fileContent)[lineNum:]...)
-	//err = string2tree()
-	//if err != nil {
-	//	return 0, "", err
-	//}
+
 	return lineNum, originContent, nil
 }

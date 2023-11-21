@@ -28,7 +28,6 @@ func (c *list) CallSelf() string {
 type listTree struct{}
 
 func (c *listTree) Execute() error {
-	getFileContent()
 	return output.OutputAsTree(curWorkspace.FileContent)
 }
 func (c *listTree) SetArgs(args []string) error {
@@ -46,7 +45,6 @@ type dirTree struct {
 }
 
 func (c *dirTree) Execute() error {
-	getFileContent()
 	if c.directory == "" {
 		return output.OutputAsTree(curWorkspace.FileContent)
 	} else {

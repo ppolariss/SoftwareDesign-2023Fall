@@ -11,7 +11,6 @@ type save struct {
 }
 
 func (c *save) Execute() error {
-	getFileContent()
 	return output.OutputAsFile(1, curWorkspace.FileContent, workspace.GetFilePath(curWorkspace.FileName))
 }
 

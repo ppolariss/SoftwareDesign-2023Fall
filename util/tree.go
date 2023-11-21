@@ -22,9 +22,6 @@ func IsInit() bool {
 	if GetRoot() == nil {
 		return false
 	}
-	//if len(GetRoot().children) == 0 {
-	//	return false
-	//}
 	return true
 }
 

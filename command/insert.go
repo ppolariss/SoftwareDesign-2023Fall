@@ -16,25 +16,6 @@ type insert struct {
 }
 
 func (c *insert) Execute() error {
-	//if c.lineNum == -1 {
-	//	n, _, err := tree.ParseToNode(c.content)
-	//	if err != nil {
-	//		return err
-	//	}
-	//	c.lineNum, err = tree.AppendTail(n)
-	//	if err != nil {
-	//		return err
-	//	}
-	//	return err
-	//} else {
-	//	//n, _, err := tree.ParseToNode(c.content)
-	//	//if err != nil {
-	//	//	return err
-	//	//}
-	//	//// println(c.line_num)
-	//	//err =
-	//	return tree.Insert(c.lineNum, c.content)
-	//}
 	var err error
 	c.lineNum, err = editor.Insert(c.lineNum, c.content, &curWorkspace.FileContent)
 	return err
@@ -89,10 +70,7 @@ type appendHead struct {
 func (c *appendHead) Execute() error {
 	// 是否会破坏文本结构
 	// 如果破坏，在哪里报错
-	//n, _, err := tree.ParseToNode(c.content)
-	//if err != nil {
-	//	return err
-	//}
+
 	_, err := editor.Insert(1, c.content, &curWorkspace.FileContent)
 	return err
 }
@@ -123,12 +101,6 @@ type appendTail struct {
 }
 
 func (c *appendTail) Execute() error {
-	//n, _, err := tree.ParseToNode(c.content)
-	//if err != nil {
-	//	return err
-	//}
-	//c.lineNum, err = tree.AppendTail(n)
-	//return err
 	var err error
 	c.lineNum, err = editor.Insert(-1, c.content, &curWorkspace.FileContent)
 	return err

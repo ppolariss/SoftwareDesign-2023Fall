@@ -13,7 +13,6 @@ func (c *load) Execute() error {
 	// 通过main.go运行，相对路径名要从main.go所在的目录开始！！！
 
 	return curWorkspace.Load(c.filepath)
-	//return editor.Load(c.filepath)
 }
 
 func (c *load) SetArgs(args []string) error {

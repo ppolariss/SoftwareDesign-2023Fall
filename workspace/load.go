@@ -18,7 +18,6 @@ func (curWorkspace *Workspace) Load(fileName string) error {
 
 	if !isEmpty(curWorkspace) {
 		updateWorkspace(curWorkspace)
-		//return errors.New("load: curWorkspace is nil")
 	}
 
 	ws = Workspace{

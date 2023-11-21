@@ -6,65 +6,6 @@ import (
 	"strings"
 )
 
-//var fileContent []string
-
-//var filePath string
-//
-//func Load(path string) error {
-//	filePath = path
-//	fileContent = fileContent[:0]
-//	// may drop the empty line
-//	fileBytes, err := os.ReadFile(filePath)
-//	if err != nil {
-//		return err
-//	}
-//	lines := bytes.Split(fileBytes, []byte("\n"))
-//	for _, line := range lines {
-//		if len(line) == 0 {
-//			continue
-//		}
-//		fileContent = append(fileContent, string(line))
-//	}
-//	//file, err := os.OpenFile(filePath, os.O_RDONLY|os.O_CREATE, 0644)
-//	//if err != nil {
-//	//	return errors.New(err.Error())
-//	//}
-//	//defer func(file *os.File) {
-//	//	_ = file.Close()
-//	//}(file)
-//	//
-//	//reader := bufio.NewReader(file)
-//	//for {
-//	//	content, err := reader.ReadString('\n')
-//	//	if err != nil {
-//	//		if err.Error() != "EOF" {
-//	//			return errors.New(err.Error())
-//	//		}
-//	//
-//	//		if content == "" {
-//	//			break
-//	//		} else {
-//	//			fileContent = append(fileContent, content)
-//	//			break
-//	//		}
-//	//		// 注意此处还要处理最后一行
-//	//	}
-//	//	// if content == "" {
-//	//	// 	continue
-//	//	// }
-//	//	fileContent = append(fileContent, content)
-//	//}
-//	return nil
-//}
-//
-//func IsInit() bool {
-//	return filePath != ""
-//}
-
-//func getLength() int {
-//	return len(fileContent)
-//}
-
 // return lineNum according to content
 func matchContent(content string, fileContent []string) (int, error) {
 	for i, v := range fileContent {
@@ -107,11 +48,3 @@ func getBareContent(s string) string {
 	}
 	return strings.Join(ss[1:], " ")
 }
-
-//func UpdateFileContent(newFileContent []string) {
-//	fileContent = newFileContent
-//}
-//
-//func GetFileContent() []string {
-//	return fileContent
-//}

@@ -22,9 +22,5 @@ func Insert(lineNum int, content string, fileContent *[]string) (int, error) {
 	// fileContent = slices.Insert(fileContent, lineNum, newNode.Node2String())
 	*fileContent = append((*fileContent)[:lineNum-1], append([]string{content}, (*fileContent)[lineNum-1:]...)...)
 
-	//err = string2tree()
-	//if err != nil {
-	//	return err
-	//}
 	return lineNum, nil
 }
