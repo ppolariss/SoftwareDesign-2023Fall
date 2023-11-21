@@ -12,31 +12,7 @@ import (
 	"design/log"
 )
 
-type fileHistory struct {
-	fileName string
-	createAt string
-}
-
-var commandsMapper = map[string]Command{
-	"load":        &load{},
-	"save":        &save{},
-	"insert":      &insert{},
-	"delete":      &deleteCommand{},
-	"append-head": &appendHead{},
-	"append-tail": &appendTail{},
-	"undo":        &commandManager.Undo{},
-	"redo":        &commandManager.Redo{},
-	"list":        &list{},
-	"list-tree":   &listTree{},
-	"dir-tree":    &dirTree{},
-	"history":     &log.History{},
-	"stats":       &stats{},
-	"ls":          &ls{},
-}
-var curFile fileHistory
-
 func init() {
-
 	RegisterObserver(&commandManager.RecordUndoableCommand{})
 	RegisterObserver(&log.Log{})
 	RegisterObserver(&logFile{})

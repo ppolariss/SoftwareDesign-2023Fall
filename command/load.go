@@ -2,13 +2,7 @@ package command
 
 import (
 	"errors"
-	"strings"
-
-	"design/editor"
-	"design/util"
 )
-
-var filePath string
 
 type load struct {
 	filepath string
@@ -17,16 +11,9 @@ type load struct {
 func (c *load) Execute() error {
 	// filepath := "../file/testFiles.txt"
 	// 通过main.go运行，相对路径名要从main.go所在的目录开始！！！
-	if strings.HasSuffix(c.filepath, "files/") {
-		c.filepath = "./" + c.filepath
-	} else {
-		c.filepath = "./files/" + c.filepath
-	}
 
-	curFile.fileName = c.filepath
-	filePath = c.filepath
-	curFile.createAt = util.GetNow()
-	return editor.Load(c.filepath)
+	return curWorkspace.Load(c.filepath)
+	//return editor.Load(c.filepath)
 }
 
 func (c *load) SetArgs(args []string) error {

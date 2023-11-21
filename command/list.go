@@ -4,19 +4,14 @@ import (
 	"errors"
 	"strings"
 
-	"design/editor"
 	"design/output"
 )
 
 type list struct {
 }
 
-var fileContent []string
-
 func (c *list) Execute() error {
-	// tree.Dump()
-	getFileContent()
-	return output.OutputAsFile(0, fileContent, filePath)
+	return output.OutputAsFile(0, curWorkspace.FileContent, "")
 }
 
 func (c *list) SetArgs(args []string) error {
@@ -34,7 +29,7 @@ type listTree struct{}
 
 func (c *listTree) Execute() error {
 	getFileContent()
-	return output.OutputAsTree(fileContent)
+	return output.OutputAsTree(curWorkspace.FileContent)
 }
 func (c *listTree) SetArgs(args []string) error {
 	if len(args) != 1 {
@@ -53,9 +48,9 @@ type dirTree struct {
 func (c *dirTree) Execute() error {
 	getFileContent()
 	if c.directory == "" {
-		return output.OutputAsTree(fileContent)
+		return output.OutputAsTree(curWorkspace.FileContent)
 	} else {
-		return output.OutputAsDir(c.directory, fileContent)
+		return output.OutputAsDir(c.directory, curWorkspace.FileContent)
 	}
 }
 
@@ -68,8 +63,4 @@ func (c *dirTree) SetArgs(args []string) error {
 }
 func (c *dirTree) CallSelf() string {
 	return "dir-tree"
-}
-
-func getFileContent() {
-	fileContent = editor.GetFileContent()
 }

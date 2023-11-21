@@ -1,6 +1,7 @@
 package command
 
 import (
+	"design/workspace"
 	"errors"
 
 	"design/output"
@@ -11,7 +12,7 @@ type save struct {
 
 func (c *save) Execute() error {
 	getFileContent()
-	return output.OutputAsFile(1, fileContent, filePath)
+	return output.OutputAsFile(1, curWorkspace.FileContent, workspace.GetFilePath(curWorkspace.FileName))
 }
 
 func (c *save) SetArgs(args []string) error {

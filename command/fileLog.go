@@ -20,11 +20,11 @@ type stats struct {
 
 func (c *stats) Execute() error {
 	if c.status == "current" {
-		interval, err := util.GetInterval(util.GetNow(), curFile.createAt)
+		interval, err := util.GetInterval(util.GetNow(), curWorkspace.CreateAt)
 		if err != nil {
 			return err
 		}
-		fmt.Println(curFile.fileName + " " + interval)
+		fmt.Println(curWorkspace.FileName + " " + interval)
 		return nil
 	}
 	f, err := os.OpenFile("./logFiles/logFile", os.O_RDWR|os.O_CREATE, 0644)
@@ -74,7 +74,7 @@ func (l *logFile) Update(command Command) error {
 		return nil
 	}
 
-	interval, err := util.GetInterval(util.GetNow(), curFile.createAt)
+	interval, err := util.GetInterval(util.GetNow(), curWorkspace.CreateAt)
 	if err != nil {
 		return err
 	}
@@ -85,8 +85,8 @@ func (l *logFile) Update(command Command) error {
 
 	once.Do(func() {
 		_ = f.Truncate(0)
-		_ = util.Output("session start at "+curFile.createAt+"\n", f)
+		_ = util.Output("session start at "+curWorkspace.CreateAt+"\n", f)
 	})
-	_ = util.Output(curFile.fileName+" "+interval+"\n", f)
+	_ = util.Output(curWorkspace.FileName+" "+interval+"\n", f)
 	return nil
 }

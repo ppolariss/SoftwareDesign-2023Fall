@@ -36,7 +36,7 @@ func (c *insert) Execute() error {
 	//	return tree.Insert(c.lineNum, c.content)
 	//}
 	var err error
-	c.lineNum, err = editor.Insert(c.lineNum, c.content)
+	c.lineNum, err = editor.Insert(c.lineNum, c.content, &curWorkspace.FileContent)
 	return err
 }
 
@@ -57,8 +57,8 @@ func (c *insert) SetArgs(args []string) error {
 		}
 		// The line number is specified
 		// in order not to couple the bottom
-		//|| num > tree.Length+1
-		if num <= 0 {
+		//
+		if num <= 0 || num > len(curWorkspace.FileContent)+1 {
 			return errors.New("insert: line number error")
 		}
 		c.lineNum = num
@@ -93,7 +93,7 @@ func (c *appendHead) Execute() error {
 	//if err != nil {
 	//	return err
 	//}
-	_, err := editor.Insert(1, c.content)
+	_, err := editor.Insert(1, c.content, &curWorkspace.FileContent)
 	return err
 }
 
@@ -130,7 +130,7 @@ func (c *appendTail) Execute() error {
 	//c.lineNum, err = tree.AppendTail(n)
 	//return err
 	var err error
-	c.lineNum, err = editor.Insert(-1, c.content)
+	c.lineNum, err = editor.Insert(-1, c.content, &curWorkspace.FileContent)
 	return err
 }
 
