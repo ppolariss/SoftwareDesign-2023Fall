@@ -14,24 +14,6 @@ const branch = "├── "
 const space = "    "
 const notSpace = "│   "
 
-func dumpNode(node *Node) {
-	fmt.Println(node.content)
-	if len(node.children) != 0 {
-		fmt.Println("children: ")
-	}
-	for _, child := range node.children {
-		dumpNode(child)
-	}
-}
-
-func Dump() {
-	fmt.Println("Dump")
-	root := GetRoot()
-	for _, child := range root.children {
-		dumpNode(child)
-	}
-}
-
 func recurOutputAsFile(node *Node, file *os.File) {
 	if node.grade != 0 {
 		for i := 0; i < node.grade; i++ {
@@ -159,19 +141,6 @@ func OutputAsDir(content string, fileContent []string) error {
 // 如果不是最后一个，那么就输出├──
 // 然后输出他的内容
 // 然后输出他的子节点
-
-// func OutputAsTree() error {
-// 	if !IsInit() {
-// 		return errors.New("OutputAsTree(): No file in workspace")
-// 	}
-
-// 	tree := GetRoot()
-// 	for _, child := range tree.children {
-// 		// recurOutputAsTree(child, 0)
-
-// 	}
-// 	return nil
-// }
 // └── 我的资源
 // ├── 程序设计
 // │ └── 软件设计
