@@ -34,13 +34,18 @@ func (c *Load) CallSelf() string {
 func (curWorkspace *Workspace) Load(fileName string) error {
 	ws, ok := allWorkspaces[fileName]
 	if ok {
-		return errors.New("load: file already opened")
-		//*CurrentWorkspace = ws
-		//return nil
+		// 如果该文件已经在某个workspace中打开，则不能重复加载
+		//return errors.New("load: file already opened")
+		*curWorkspace = ws
+		return nil
 	}
 
 	if !isEmpty(curWorkspace) {
 		updateWorkspace(curWorkspace)
+		err := Log(curWorkspace)
+		if err != nil {
+			return err
+		}
 	}
 
 	ws = Workspace{

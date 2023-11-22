@@ -1,7 +1,10 @@
 package workspace
 
 import (
+	"design/util"
+	"os"
 	"strings"
+	"sync"
 )
 
 func init() {
@@ -9,6 +12,7 @@ func init() {
 	path = "./files/"
 }
 
+// updateWorkspace update workspace in allWorkspaces
 func updateWorkspace(curWorkspace *Workspace) {
 	if isEmpty(curWorkspace) {
 		return
@@ -40,7 +44,31 @@ func isEmpty(workspace *Workspace) bool {
 	return false
 }
 
-// if Dirty, save to file
+// Dirty if Dirty, save to file
 func (curWorkspace *Workspace) Dirty() bool {
 	return len(curWorkspace.UndoableCommandHistory) != 0
+}
+
+var once sync.Once
+
+// Log workspace for stats
+func Log(curWorkspace *Workspace) error {
+	if curWorkspace == nil {
+		return nil
+	}
+
+	interval, err := util.GetInterval(util.GetNow(), curWorkspace.CreateAt)
+	if err != nil {
+		return err
+	}
+	f, err := os.OpenFile("./logFiles/logFile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		return err
+	}
+
+	once.Do(func() {
+		_ = f.Truncate(0)
+		_ = util.Output("session start at "+curWorkspace.CreateAt+"\n", f)
+	})
+	return util.Output(curWorkspace.FileName+" "+interval+"\n", f)
 }

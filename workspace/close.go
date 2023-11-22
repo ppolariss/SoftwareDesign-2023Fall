@@ -50,8 +50,11 @@ func (curWorkspace *Workspace) Close() error {
 
 	_, ok := allWorkspaces[curWorkspace.FileName]
 	if ok {
+		err := Log(curWorkspace)
+		if err != nil {
+			return err
+		}
 		delete(allWorkspaces, curWorkspace.FileName)
-
 		*curWorkspace = Workspace{}
 		return nil
 	}

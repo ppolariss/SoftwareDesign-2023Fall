@@ -15,7 +15,7 @@ import (
 func init() {
 	RegisterObserver(&commandManager.RecordUndoableCommand{})
 	RegisterObserver(&log.Log{})
-	RegisterObserver(&log.LogFile{})
+	//RegisterObserver(&log.LogFile{})
 }
 
 // Do must get input outside

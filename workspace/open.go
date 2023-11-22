@@ -22,8 +22,15 @@ func (o *Open) CallSelf() string {
 }
 
 func (curWorkspace *Workspace) Open(fileName string) error {
+	if curWorkspace.FileName == fileName {
+		return nil
+	}
 	if !isEmpty(curWorkspace) {
 		updateWorkspace(curWorkspace)
+		err := Log(curWorkspace)
+		if err != nil {
+			return err
+		}
 	}
 
 	_, ok := allWorkspaces[fileName]
