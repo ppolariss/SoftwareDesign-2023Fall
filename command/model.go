@@ -2,6 +2,7 @@ package command
 
 import (
 	"design/commandManager"
+	"design/editor"
 	. "design/interfaces"
 	"design/log"
 	"design/output"
@@ -9,10 +10,10 @@ import (
 )
 
 var commandsMapper = map[string]Command{
-	"insert":         &insert{},
-	"delete":         &deleteCommand{},
-	"append-head":    &appendHead{},
-	"append-tail":    &appendTail{},
+	"insert":         &editor.InsertCommand{},
+	"delete":         &editor.DeleteCommand{},
+	"append-head":    &editor.AppendHead{},
+	"append-tail":    &editor.AppendTail{},
 	"load":           &workspace.Load{},
 	"save":           &workspace.Save{},
 	"exit":           &workspace.Exit{},
