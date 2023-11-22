@@ -23,8 +23,8 @@ var commandsMapper = map[string]Command{
 	"redo":           &commandManager.Redo{},
 	"history":        &log.History{},
 	"stats":          &log.Stats{},
-	"list":           &List{},
-	"list-tree":      &ListTree{},
-	"dir-tree":       &DirTree{},
+	"list":           &output.List{},
+	"list-tree":      &output.ListTree{},
+	"dir-tree":       &output.DirTree{},
 	"ls":             &output.Ls{},
 }

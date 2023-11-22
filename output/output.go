@@ -1,73 +1,16 @@
 package output
 
 import (
-	"errors"
-	"fmt"
-	"os"
-
 	. "design/interfaces"
 	"design/util"
+	"errors"
+	"fmt"
 )
 
 const endBranch = "└── "
 const branch = "├── "
 const space = "    "
 const notSpace = "│   "
-
-func recurOutputAsFile(node *util.Node, file *os.File) {
-	if node.Grade != 0 {
-		for i := 0; i < node.Grade; i++ {
-			_ = util.Output("#", file)
-
-		}
-		_ = util.Output(" ", file)
-
-	}
-
-	_ = util.Output(node.Content+"\n", file)
-	for _, child := range node.Children {
-		recurOutputAsFile(child, file)
-	}
-}
-
-// OutputAsFile para: 0: output to terminal; 1: output to file
-func AsFile(para int, fileContent []string, filePath string) error {
-	err := util.String2tree(fileContent)
-	if err != nil {
-		return err
-	}
-	if !util.IsInit() {
-		return errors.New("OutputAsFile(): No file in workspace")
-	}
-
-	tree := util.GetRoot()
-	if para != 0 {
-		// 向文件输入
-		file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
-		if err != nil {
-			return errors.New(err.Error())
-		}
-
-		// 清空文件内容
-		err = file.Truncate(0)
-		if err != nil {
-			return errors.New(err.Error())
-		}
-
-		for _, child := range tree.Children {
-			recurOutputAsFile(child, file)
-		}
-		defer func(file *os.File) {
-			_ = file.Close()
-		}(file)
-	} else {
-		// 向终端输入
-		for _, child := range tree.Children {
-			recurOutputAsFile(child, nil)
-		}
-	}
-	return nil
-}
 
 func recurOutputAsTree(prefix string, treeOut TreeOut) error {
 	if treeOut == nil {

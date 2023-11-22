@@ -1,7 +1,7 @@
 package workspace
 
 import (
-	"design/output"
+	"design/util"
 	"errors"
 )
 
@@ -36,5 +36,5 @@ func (curWorkspace *Workspace) Save() error {
 	//}
 	updateWorkspace(curWorkspace)
 	//*curWorkspace = nil
-	return output.AsFile(1, curWorkspace.FileContent, GetFilePath(curWorkspace.FileName))
+	return util.AsFile(1, curWorkspace.FileContent, GetFilePath(curWorkspace.FileName))
 }
