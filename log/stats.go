@@ -14,29 +14,7 @@ type Stats struct {
 }
 
 func (c *Stats) Execute() error {
-	if c.status == "current" {
-		interval, err := util.GetInterval(util.GetNow(), workspace.CurWorkspace.CreateAt)
-		if err != nil {
-			return err
-		}
-		fmt.Println(workspace.CurWorkspace.FileName + " " + interval)
-		return nil
-	}
-	f, err := os.OpenFile("./logFiles/logFile", os.O_RDWR|os.O_CREATE, 0644)
-	if err != nil {
-		return nil
-	}
-	defer func(f *os.File) {
-		_ = f.Close()
-	}(f)
-	tempHistory, err := util.ReadStrings(f)
-	if err != nil {
-		return nil
-	}
-	for _, v := range tempHistory {
-		fmt.Println(v)
-	}
-	return nil
+	return stats(c.status, workspace.CurWorkspace.CreateAt, workspace.CurWorkspace.FileName)
 }
 
 func (c *Stats) SetArgs(args []string) error {
@@ -56,4 +34,30 @@ func (c *Stats) SetArgs(args []string) error {
 
 func (c *Stats) CallSelf() string {
 	return "stats" + " " + c.status
+}
+
+func stats(status string, createAt string, fileName string) error {
+	if status == "current" {
+		interval, err := util.GetInterval(util.GetNow(), createAt)
+		if err != nil {
+			return err
+		}
+		fmt.Println(fileName + " " + interval)
+		return nil
+	}
+	f, err := os.OpenFile("./logFiles/logFile", os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		return nil
+	}
+	defer func(f *os.File) {
+		_ = f.Close()
+	}(f)
+	tempHistory, err := util.ReadStrings(f)
+	if err != nil {
+		return nil
+	}
+	for _, v := range tempHistory {
+		fmt.Println(v)
+	}
+	return nil
 }

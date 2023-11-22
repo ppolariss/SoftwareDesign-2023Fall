@@ -2,7 +2,6 @@ package command
 
 import (
 	"design/commandManager"
-	"design/editor"
 	. "design/interfaces"
 	"design/log"
 	"design/output"
@@ -10,10 +9,14 @@ import (
 )
 
 var commandsMapper = map[string]Command{
-	"insert":         &editor.InsertCommand{},
-	"delete":         &editor.DeleteCommand{},
-	"append-head":    &editor.AppendHead{},
-	"append-tail":    &editor.AppendTail{},
+	"insert":         &InsertCommand{},
+	"delete":         &DeleteCommand{},
+	"append-head":    &AppendHead{},
+	"append-tail":    &AppendTail{},
+	"list":           &List{},
+	"list-tree":      &ListTree{},
+	"dir-tree":       &DirTree{},
+	"ls":             &output.Ls{},
 	"load":           &workspace.Load{},
 	"save":           &workspace.Save{},
 	"exit":           &workspace.Exit{},
@@ -24,8 +27,4 @@ var commandsMapper = map[string]Command{
 	"redo":           &commandManager.Redo{},
 	"history":        &log.History{},
 	"stats":          &log.Stats{},
-	"list":           &output.List{},
-	"list-tree":      &output.ListTree{},
-	"dir-tree":       &output.DirTree{},
-	"ls":             &output.Ls{},
 }

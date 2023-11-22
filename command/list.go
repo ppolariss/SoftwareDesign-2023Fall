@@ -1,6 +1,7 @@
-package output
+package command
 
 import (
+	"design/output"
 	"design/util"
 	"design/workspace"
 	"errors"
@@ -28,7 +29,7 @@ func (c *List) CallSelf() string {
 type ListTree struct{}
 
 func (c *ListTree) Execute() error {
-	return AsTree(workspace.CurWorkspace.FileContent)
+	return output.AsTree(workspace.CurWorkspace.FileContent)
 }
 func (c *ListTree) SetArgs(args []string) error {
 	if len(args) != 1 {
@@ -46,9 +47,9 @@ type DirTree struct {
 
 func (c *DirTree) Execute() error {
 	if c.directory == "" {
-		return AsTree(workspace.CurWorkspace.FileContent)
+		return output.AsTree(workspace.CurWorkspace.FileContent)
 	} else {
-		return AsDir(c.directory, workspace.CurWorkspace.FileContent)
+		return output.AsDir(c.directory, workspace.CurWorkspace.FileContent)
 	}
 }
 
