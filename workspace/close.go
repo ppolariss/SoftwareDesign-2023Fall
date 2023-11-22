@@ -26,7 +26,7 @@ func (curWorkspace *Workspace) Close() error {
 	if isEmpty(curWorkspace) {
 		return errors.New("close: curWorkspace is nil")
 	}
-	if curWorkspace.Dirty {
+	if curWorkspace.Dirty() {
 		fmt.Println("Do you want to save the current workspace [Y\\N] ？")
 		var input string
 		for {

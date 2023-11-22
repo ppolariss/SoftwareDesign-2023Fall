@@ -45,7 +45,6 @@ func (curWorkspace *Workspace) Load(fileName string) error {
 
 	ws = Workspace{
 		FileName:               fileName,
-		Dirty:                  false,
 		UndoableCommandHistory: make([]UndoableCommand, 0),
 		UndoableCommandPointer: 0,
 		FileContent:            make([]string, 0),
@@ -77,6 +76,8 @@ func (curWorkspace *Workspace) Load(fileName string) error {
 	}
 
 	ws.CreateAt = util.GetNow()
+	//allWorkspaces[fileName] = ws
 	*curWorkspace = ws
+	allWorkspaces[fileName] = *curWorkspace
 	return nil
 }

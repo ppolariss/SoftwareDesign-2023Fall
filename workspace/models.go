@@ -6,7 +6,6 @@ import (
 
 type Workspace struct {
 	FileName               string
-	Dirty                  bool // if Dirty, save to file
 	UndoableCommandHistory []UndoableCommand
 	UndoableCommandPointer int
 	FileContent            []string

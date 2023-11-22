@@ -39,3 +39,8 @@ func isEmpty(workspace *Workspace) bool {
 	}
 	return false
 }
+
+// if Dirty, save to file
+func (curWorkspace *Workspace) Dirty() bool {
+	return len(curWorkspace.UndoableCommandHistory) != 0
+}

@@ -12,7 +12,7 @@ const branch = "├── "
 const space = "    "
 const notSpace = "│   "
 
-func recurOutputAsTree(prefix string, treeOut TreeOut) error {
+func recurOutputAsTree(prefix string, treeOut TreeOut, suffix func(string) string) error {
 	if treeOut == nil {
 		return nil
 	}
@@ -22,12 +22,20 @@ func recurOutputAsTree(prefix string, treeOut TreeOut) error {
 		var err error
 		if i != l-1 {
 			fmt.Print(branch)
-			fmt.Println(child.Name())
-			err = recurOutputAsTree(prefix+notSpace, child)
+			fmt.Print(child.Name())
+			if suffix != nil {
+				fmt.Print(suffix(child.Name()))
+			}
+			fmt.Print("\n")
+			err = recurOutputAsTree(prefix+notSpace, child, suffix)
 		} else {
 			fmt.Print(endBranch)
-			fmt.Println(child.Name())
-			err = recurOutputAsTree(prefix+space, child)
+			fmt.Print(child.Name())
+			if suffix != nil {
+				fmt.Print(suffix(child.Name()))
+			}
+			fmt.Print("\n")
+			err = recurOutputAsTree(prefix+space, child, suffix)
 		}
 		if err != nil {
 			return err
@@ -47,7 +55,7 @@ func AsTree(fileContent []string) error {
 
 	tree := util.GetRoot()
 	//for _, child := range tree.children {
-	err = recurOutputAsTree("", tree)
+	err = recurOutputAsTree("", tree, nil)
 	if err != nil {
 		return err
 	}
@@ -71,7 +79,7 @@ func AsDir(content string, fileContent []string) error {
 	fmt.Print(endBranch)
 	fmt.Println(node.Content)
 	//for _, child := range node.children {
-	err = recurOutputAsTree(space, node)
+	err = recurOutputAsTree(space, node, nil)
 	if err != nil {
 		return err
 	}

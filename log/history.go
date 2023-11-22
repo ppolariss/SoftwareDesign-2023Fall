@@ -2,6 +2,7 @@ package log
 
 import (
 	"design/util"
+	"design/workspace"
 	"errors"
 	"fmt"
 	"os"
@@ -42,7 +43,7 @@ func (c *History) CallSelf() string {
 }
 
 func history(num int) error {
-	f, err := os.OpenFile("./logFiles/log", os.O_RDWR|os.O_CREATE, 0644)
+	f, err := os.OpenFile("./logFiles/log/"+workspace.CurWorkspace.FileName, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		return err
 	}

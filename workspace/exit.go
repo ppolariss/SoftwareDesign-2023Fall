@@ -25,7 +25,7 @@ func (e *Exit) CallSelf() string {
 func (curWorkspace *Workspace) Exit() error {
 	var dirty bool
 	for _, workspace := range allWorkspaces {
-		if workspace.Dirty {
+		if workspace.Dirty() {
 			dirty = true
 			break
 		}
@@ -40,7 +40,7 @@ func (curWorkspace *Workspace) Exit() error {
 			}
 			if input == "Y" || input == "y" {
 				for _, workspace := range allWorkspaces {
-					if workspace.Dirty {
+					if workspace.Dirty() {
 						err = workspace.Save()
 						if err != nil {
 							return err
@@ -59,5 +59,6 @@ func (curWorkspace *Workspace) Exit() error {
 	allWorkspaces = make(map[string]Workspace)
 
 	*curWorkspace = Workspace{}
-	return nil
+	// exit the program
+	return errors.New("")
 }

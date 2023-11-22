@@ -68,10 +68,10 @@ func ReadCommand(scanner *bufio.Scanner) (Command, error) {
 		return nil, errors.New("no input")
 	}
 	// get command
-	command := commandsMapper[args[0]]()
-	if command == nil {
+	if commandsMapper[args[0]] == nil {
 		return nil, errors.New("invalid command")
 	}
+	command := commandsMapper[args[0]]()
 	err := command.SetArgs(args)
 	if err != nil {
 		return nil, err

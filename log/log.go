@@ -1,6 +1,7 @@
 package log
 
 import (
+	"design/workspace"
 	"errors"
 	"os"
 	"sync"
@@ -23,7 +24,8 @@ func (l *Log) Update(command Command) error {
 	}
 
 	// global variable of logger
-	f, err := os.OpenFile("./logFiles/log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	// 可能要转义
+	f, err := os.OpenFile("./logFiles/log/"+workspace.CurWorkspace.FileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		return errors.New("open log error")
 	}

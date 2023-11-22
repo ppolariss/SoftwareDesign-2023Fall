@@ -4,7 +4,6 @@ import (
 	"design/commandManager"
 	. "design/interfaces"
 	"design/log"
-	"design/output"
 	"design/workspace"
 )
 
@@ -18,7 +17,7 @@ var commandsMapper = map[string]getCommand{
 	"list":           func() Command { return &List{} },
 	"list-tree":      func() Command { return &ListTree{} },
 	"dir-tree":       func() Command { return &DirTree{} },
-	"ls":             func() Command { return &output.Ls{} },
+	"ls":             func() Command { return &workspace.Ls{} },
 	"load":           func() Command { return &workspace.Load{} },
 	"save":           func() Command { return &workspace.Save{} },
 	"exit":           func() Command { return &workspace.Exit{} },
