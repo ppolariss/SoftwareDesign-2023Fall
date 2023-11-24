@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"os"
+	"io"
 	"strings"
 
 	"design/commandManager"
@@ -19,9 +19,12 @@ func init() {
 }
 
 // Do must get input outside
-func Do() error {
-	scanner := bufio.NewScanner(os.Stdin)
+func Do(reader io.Reader) error {
+	scanner := bufio.NewScanner(reader)
 	scanner.Split(bufio.ScanLines)
+
+	//reader := bufio.NewReader(os.Stdin)
+	//reader.ReadLine()
 
 	var err error
 	for scanner.Scan() {

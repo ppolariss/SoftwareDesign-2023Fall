@@ -1,6 +1,7 @@
 package main
 
 import (
+	"design/command"
 	// "bytes"
 	// "fmt"
 	"design/util"
@@ -37,10 +38,10 @@ func TestCommand(t *testing.T) {
 		_ = f.Close()
 	}
 
-	oldStdin := os.Stdin
+	//oldStdin := os.Stdin
 	oldStdout := os.Stdout
 	defer func() {
-		os.Stdin = oldStdin
+		//	os.Stdin = oldStdin
 		os.Stdout = oldStdout
 	}()
 
@@ -60,7 +61,10 @@ func TestCommand(t *testing.T) {
 
 		os.Stdout = tmpfile
 
-		main()
+		err = command.Do(inputFile)
+		if err != nil {
+			return
+		}
 
 		_ = tmpfile.Close()
 		_ = inputFile.Close()

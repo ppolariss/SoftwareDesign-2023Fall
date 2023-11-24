@@ -14,6 +14,9 @@ type Stats struct {
 }
 
 func (c *Stats) Execute() error {
+	if workspace.CurWorkspace == nil && c.status == "current" {
+		return errors.New("stats: curWorkspace is nil")
+	}
 	return stats(c.status, workspace.CurWorkspace.CreateAt, workspace.CurWorkspace.FileName)
 }
 
