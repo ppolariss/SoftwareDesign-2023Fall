@@ -6,6 +6,7 @@ import (
 	"design/util"
 	"errors"
 	"os"
+	"strings"
 )
 
 type Load struct {
@@ -24,6 +25,9 @@ func (c *Load) SetArgs(args []string) error {
 		return errors.New("load: args error")
 	}
 	c.filepath = args[1]
+	if !strings.HasSuffix(c.filepath, ".md") {
+		c.filepath += ".md"
+	}
 	return nil
 }
 

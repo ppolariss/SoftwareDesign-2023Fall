@@ -1,6 +1,9 @@
 package workspace
 
-import "errors"
+import (
+	"errors"
+	"strings"
+)
 
 type Open struct {
 	fileName string
@@ -14,6 +17,9 @@ func (o *Open) SetArgs(args []string) error {
 		return errors.New("open: args error")
 	}
 	o.fileName = args[1]
+	if !strings.HasSuffix(o.fileName, ".md") {
+		o.fileName += ".md"
+	}
 	return nil
 }
 

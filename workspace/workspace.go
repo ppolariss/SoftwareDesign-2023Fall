@@ -3,13 +3,12 @@ package workspace
 import (
 	"design/util"
 	"os"
-	"strings"
 	"sync"
 )
 
-func init() {
-	allWorkspaces = make(map[string]Workspace)
-	path = "./files/"
+func Init() {
+	Deserialize()
+	_ = util.AsJson("", path+"backup.json")
 }
 
 // updateWorkspace update workspace in allWorkspaces
@@ -20,14 +19,6 @@ func updateWorkspace(curWorkspace *Workspace) {
 	_, ok := allWorkspaces[curWorkspace.FileName]
 	if ok {
 		allWorkspaces[curWorkspace.FileName] = *curWorkspace
-	}
-}
-
-func GetFilePath(fileName string) string {
-	if !strings.HasPrefix(fileName, path) {
-		return path + fileName
-	} else {
-		return fileName
 	}
 }
 

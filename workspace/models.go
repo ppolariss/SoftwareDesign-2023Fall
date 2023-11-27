@@ -13,6 +13,6 @@ type Workspace struct {
 }
 
 // var CurrentWorkspace *Workspace
-var allWorkspaces map[string]Workspace
-var path string
+var allWorkspaces = make(map[string]Workspace)
+var path = "./files/"
 var CurWorkspace = &Workspace{}

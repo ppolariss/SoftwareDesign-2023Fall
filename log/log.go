@@ -16,6 +16,13 @@ type Log struct {
 }
 
 func (l *Log) Update(command Command) error {
+	var fileName string
+	if workspace.CurWorkspace == nil || workspace.CurWorkspace.FileName == "" {
+		fileName = "global"
+	} else {
+		fileName = workspace.CurWorkspace.FileName
+	}
+
 	var callSelf string
 	if command == nil {
 		callSelf = "error"
@@ -25,7 +32,7 @@ func (l *Log) Update(command Command) error {
 
 	// global variable of logger
 	// 可能要转义
-	f, err := os.OpenFile("./logFiles/log/"+workspace.CurWorkspace.FileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	f, err := os.OpenFile("./logFiles/log/"+fileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		return errors.New("open log error")
 	}

@@ -68,6 +68,26 @@ func AsFile(para int, fileContent []string, filePath string) error {
 	return nil
 }
 
+func AsJson(content string, filePath string) error {
+	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
+	if err != nil {
+		return errors.New(err.Error())
+	}
+	defer func(file *os.File) {
+		_ = file.Close()
+	}(file)
+	// 清空文件内容
+	err = file.Truncate(0)
+	if err != nil {
+		return errors.New(err.Error())
+	}
+	_, err = file.WriteString(content)
+	if err != nil {
+		return errors.New(err.Error())
+	}
+	return nil
+}
+
 //func recurOutputAsFile(node *util.Node, file *os.File) {
 //	if node.Grade != 0 {
 //		for i := 0; i < node.Grade; i++ {

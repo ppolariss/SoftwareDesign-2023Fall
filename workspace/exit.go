@@ -57,6 +57,8 @@ func (curWorkspace *Workspace) Exit() error {
 		}
 	}
 
+	Serialize()
+
 	for _, workspace := range allWorkspaces {
 		err := Log(&workspace)
 		if err != nil {

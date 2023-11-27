@@ -33,3 +33,37 @@ func ReadStrings(file *os.File) ([]string, error) {
 	}
 	return result, nil
 }
+
+func ReadString(file *os.File) (string, error) {
+	var result = ""
+	s, err := ReadStrings(file)
+	if err != nil {
+		return result, err
+	}
+	for _, v := range s {
+		result += v
+	}
+	return result, nil
+}
+
+func IsFileEmpty(filePath string) (bool, error) {
+	f, err := os.OpenFile(filePath, os.O_RDONLY, 0644)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return true, nil
+		}
+		return false, errors.New(err.Error())
+	}
+	defer func(f *os.File) {
+		_ = f.Close()
+	}(f)
+
+	s, err := ReadString(f)
+	if err != nil {
+		return false, err
+	}
+	if s == "" {
+		return true, nil
+	}
+	return false, nil
+}
