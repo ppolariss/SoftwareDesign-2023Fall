@@ -38,6 +38,15 @@ func IsEmpty(workspace *Workspace) bool {
 //	return len(curWorkspace.UndoableCommandHistory) != 0
 //}
 
+func IsExistDirty() bool {
+	for _, ws := range AllWorkspaces {
+		if ws.Dirty {
+			return true
+		}
+	}
+	return false
+}
+
 var once sync.Once
 
 // Log workspace for stats

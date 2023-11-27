@@ -3,6 +3,7 @@ package workspace
 import (
 	"errors"
 	"fmt"
+	"sort"
 )
 
 //	test1
@@ -31,13 +32,21 @@ func (l *List) CallSelf() string {
 
 func (curWorkspace *Workspace) List() error {
 	updateWorkspace(CurWorkspace)
-	for _, workspace := range AllWorkspaces {
-		if workspace.FileName == curWorkspace.FileName {
-			fmt.Print(arrow, workspace.FileName)
+	// output as directory order
+	keys := make([]string, 0, len(AllWorkspaces))
+	for k := range AllWorkspaces {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, k := range keys {
+
+		if AllWorkspaces[k].FileName == curWorkspace.FileName {
+			fmt.Print(arrow, AllWorkspaces[k].FileName)
 		} else {
-			fmt.Print(space, workspace.FileName)
+			fmt.Print(space, AllWorkspaces[k].FileName)
 		}
-		if workspace.Dirty {
+		if AllWorkspaces[k].Dirty {
 			fmt.Println(star)
 		} else {
 			fmt.Println()

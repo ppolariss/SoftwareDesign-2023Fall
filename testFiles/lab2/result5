@@ -1,0 +1,10 @@
+  test1.md *
+  test2.md
+  test3.md *
+  test4.md *
+  test5.md *
+  test6.md
+->test7.md
+└── 大学合集
+    ├── 1. 复旦大学
+    └── 2. 上海交通大学

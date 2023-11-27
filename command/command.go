@@ -14,7 +14,7 @@ import (
 	"design/log"
 )
 
-func init() {
+func Init() {
 	RegisterObserver(&commandManager.RecordUndoableCommand{})
 	RegisterObserver(&log.Log{})
 	Deserialize()
@@ -51,9 +51,14 @@ func Do(reader io.Reader) error {
 
 	}
 	if err != nil {
+		if err.Error() == "exit" {
+			if !workspace.IsExistDirty() {
+				Serialize()
+			}
+			return nil
+		}
 		// 错误日志
 		_ = NotifyObserver(nil)
-		Serialize()
 	}
 	return err
 }

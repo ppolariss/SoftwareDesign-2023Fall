@@ -68,5 +68,5 @@ func (curWorkspace *Workspace) Exit() error {
 	//*curWorkspace = Workspace{}
 
 	// exit the program
-	return errors.New("")
+	return errors.New("exit")
 }

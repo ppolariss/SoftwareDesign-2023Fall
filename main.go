@@ -20,6 +20,8 @@ func init() {
 			_ = os.Mkdir(dirPath, 0755)
 		}
 	}
+
+	command.Init()
 }
 
 func main() {
