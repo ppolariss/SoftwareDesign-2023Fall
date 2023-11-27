@@ -36,7 +36,7 @@ func (c *Load) CallSelf() string {
 }
 
 func (curWorkspace *Workspace) Load(fileName string) error {
-	ws, ok := allWorkspaces[fileName]
+	ws, ok := AllWorkspaces[fileName]
 	if ok {
 		// 如果该文件已经在某个workspace中打开，则不能重复加载
 		//return errors.New("load: file already opened")
@@ -44,7 +44,7 @@ func (curWorkspace *Workspace) Load(fileName string) error {
 		return nil
 	}
 
-	if !isEmpty(curWorkspace) {
+	if !IsEmpty(curWorkspace) {
 		updateWorkspace(curWorkspace)
 		err := Log(curWorkspace)
 		if err != nil {
@@ -57,6 +57,7 @@ func (curWorkspace *Workspace) Load(fileName string) error {
 		UndoableCommandHistory: make([]UndoableCommand, 0),
 		UndoableCommandPointer: 0,
 		FileContent:            make([]string, 0),
+		Dirty:                  false,
 	}
 
 	filePath := GetFilePath(fileName)
@@ -87,6 +88,6 @@ func (curWorkspace *Workspace) Load(fileName string) error {
 	ws.CreateAt = util.GetNow()
 	//allWorkspaces[fileName] = ws
 	*curWorkspace = ws
-	allWorkspaces[fileName] = *curWorkspace
+	AllWorkspaces[fileName] = *curWorkspace
 	return nil
 }

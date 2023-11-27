@@ -1,0 +1,13 @@
+load test6.md
+insert ## 程序设计
+append-head # 我的资源
+append-tail ### 软件设计
+save
+load test7.md
+append-head # 大学合集
+append-tail 1. 复旦大学
+append-tail 2. 上海交通大学
+undo
+list-tree
+save
+exit

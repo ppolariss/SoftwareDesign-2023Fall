@@ -25,8 +25,8 @@ func (e *Exit) CallSelf() string {
 func (curWorkspace *Workspace) Exit() error {
 	updateWorkspace(curWorkspace)
 	var dirty bool
-	for _, workspace := range allWorkspaces {
-		if workspace.Dirty() {
+	for _, workspace := range AllWorkspaces {
+		if workspace.Dirty {
 			dirty = true
 			break
 		}
@@ -40,8 +40,8 @@ func (curWorkspace *Workspace) Exit() error {
 				return errors.New(err.Error())
 			}
 			if input == "Y" || input == "y" {
-				for _, workspace := range allWorkspaces {
-					if workspace.Dirty() {
+				for _, workspace := range AllWorkspaces {
+					if workspace.Dirty {
 						err = workspace.Save()
 						if err != nil {
 							return err
@@ -57,17 +57,16 @@ func (curWorkspace *Workspace) Exit() error {
 		}
 	}
 
-	Serialize()
-
-	for _, workspace := range allWorkspaces {
+	for _, workspace := range AllWorkspaces {
 		err := Log(&workspace)
 		if err != nil {
 			return err
 		}
 	}
 
-	allWorkspaces = make(map[string]Workspace)
-	*curWorkspace = Workspace{}
+	//AllWorkspaces = make(map[string]Workspace)
+	//*curWorkspace = Workspace{}
+
 	// exit the program
 	return errors.New("")
 }

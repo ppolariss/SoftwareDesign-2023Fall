@@ -17,8 +17,8 @@ func (c *Ls) SetArgs(args []string) error {
 
 func (c *Ls) Execute() error {
 	updateWorkspace(CurWorkspace)
-	return output.Ls(path, func(name string) string {
-		for _, n := range allWorkspaces {
+	return output.Ls(Path, func(name string) string {
+		for _, n := range AllWorkspaces {
 			if n.FileName == name {
 				return star
 			}

@@ -25,7 +25,7 @@ func (c *Save) CallSelf() string {
 }
 
 func (curWorkspace *Workspace) Save() error {
-	if isEmpty(curWorkspace) {
+	if IsEmpty(curWorkspace) {
 		return errors.New("save: curWorkspace is nil")
 	}
 	//name := reflect.TypeOf(command).Elem().Name()
@@ -34,6 +34,7 @@ func (curWorkspace *Workspace) Save() error {
 	//curWorkspace.UndoableCommandPointer = 0
 	//	return nil
 	//}
+	curWorkspace.Dirty = false
 	updateWorkspace(curWorkspace)
 	//*curWorkspace = nil
 	return util.AsFile(1, curWorkspace.FileContent, GetFilePath(curWorkspace.FileName))

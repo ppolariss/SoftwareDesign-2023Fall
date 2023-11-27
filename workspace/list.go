@@ -31,13 +31,13 @@ func (l *List) CallSelf() string {
 
 func (curWorkspace *Workspace) List() error {
 	updateWorkspace(CurWorkspace)
-	for _, workspace := range allWorkspaces {
+	for _, workspace := range AllWorkspaces {
 		if workspace.FileName == curWorkspace.FileName {
 			fmt.Print(arrow, workspace.FileName)
 		} else {
 			fmt.Print(space, workspace.FileName)
 		}
-		if workspace.Dirty() {
+		if workspace.Dirty {
 			fmt.Println(star)
 		} else {
 			fmt.Println()

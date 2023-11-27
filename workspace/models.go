@@ -10,9 +10,10 @@ type Workspace struct {
 	UndoableCommandPointer int
 	FileContent            []string
 	CreateAt               string
+	Dirty                  bool
 }
 
 // var CurrentWorkspace *Workspace
-var allWorkspaces = make(map[string]Workspace)
-var path = "./files/"
+var AllWorkspaces = make(map[string]Workspace)
+var Path = "./files/"
 var CurWorkspace = &Workspace{}

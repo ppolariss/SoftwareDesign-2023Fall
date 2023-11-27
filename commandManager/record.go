@@ -18,6 +18,7 @@ func (c *RecordUndoableCommand) Update(command Command) error {
 	if ok {
 		CurWorkspace.UndoableCommandHistory = append(CurWorkspace.UndoableCommandHistory, undoableCommand)
 		CurWorkspace.UndoableCommandPointer = len(CurWorkspace.UndoableCommandHistory) - 1
+		CurWorkspace.Dirty = true
 	}
 	return nil
 }

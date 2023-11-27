@@ -9,19 +9,21 @@ import (
 )
 
 type DeleteCommand struct {
-	lineNum int
-	content string //node.content
+	Name    string
+	LineNum int
+	Content string //node.Content
 }
 
 func (c *DeleteCommand) Execute() error {
 	var err error
-	c.lineNum, c.content, err = editor.Delete(c.lineNum, c.content, &workspace.CurWorkspace.FileContent)
+	c.LineNum, c.Content, err = editor.Delete(c.LineNum, c.Content, &workspace.CurWorkspace.FileContent)
 	return err
 	// 删除指定标题或⽂本。如果指定⾏号，则删除指定⾏。当删除的是标题时，其⼦标题
 	// 和内容不会被删除。
 }
 
 func (c *DeleteCommand) SetArgs(args []string) error {
+	c.Name = "delete"
 	if len(args) < 2 {
 		return errors.New("delete: args error")
 	}
@@ -33,31 +35,31 @@ func (c *DeleteCommand) SetArgs(args []string) error {
 			if num > len(workspace.CurWorkspace.FileContent) {
 				return errors.New("delete: line number error")
 			}
-			c.lineNum = num
-			c.content = ""
+			c.LineNum = num
+			c.Content = ""
 			return nil
 		}
 	}
 
 	// The line number is not specified
-	c.lineNum = 0
+	c.LineNum = 0
 	sliceArgs := args[1:]
-	c.content = strings.Join(sliceArgs, " ")
+	c.Content = strings.Join(sliceArgs, " ")
 
 	return nil
 }
 
 func (c *DeleteCommand) CallSelf() string {
 	retStr := "delete"
-	if c.lineNum > 0 {
-		retStr += " " + strconv.Itoa(c.lineNum)
+	if c.LineNum > 0 {
+		retStr += " " + strconv.Itoa(c.LineNum)
 	} else {
-		retStr += " " + c.content
+		retStr += " " + c.Content
 	}
 	return retStr
 }
 
 func (c *DeleteCommand) UndoExecute() error {
-	i := InsertCommand{lineNum: c.lineNum, content: c.content}
+	i := InsertCommand{LineNum: c.LineNum, Content: c.Content}
 	return i.Execute()
 }

@@ -14,8 +14,8 @@ func GetFileName(raw string) string {
 }
 
 func GetFilePath(fileName string) string {
-	if !strings.HasPrefix(fileName, path) {
-		return path + fileName
+	if !strings.HasPrefix(fileName, Path) {
+		return Path + fileName
 	} else {
 		return fileName
 	}

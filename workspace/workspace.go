@@ -7,22 +7,20 @@ import (
 )
 
 func Init() {
-	Deserialize()
-	_ = util.AsJson("", path+"backup.json")
 }
 
-// updateWorkspace update workspace in allWorkspaces
+// updateWorkspace update workspace in AllWorkspaces
 func updateWorkspace(curWorkspace *Workspace) {
-	if isEmpty(curWorkspace) {
+	if IsEmpty(curWorkspace) {
 		return
 	}
-	_, ok := allWorkspaces[curWorkspace.FileName]
+	_, ok := AllWorkspaces[curWorkspace.FileName]
 	if ok {
-		allWorkspaces[curWorkspace.FileName] = *curWorkspace
+		AllWorkspaces[curWorkspace.FileName] = *curWorkspace
 	}
 }
 
-func isEmpty(workspace *Workspace) bool {
+func IsEmpty(workspace *Workspace) bool {
 	if workspace == nil {
 		return true
 	}
@@ -35,10 +33,10 @@ func isEmpty(workspace *Workspace) bool {
 	return false
 }
 
-// Dirty if Dirty, save to file
-func (curWorkspace *Workspace) Dirty() bool {
-	return len(curWorkspace.UndoableCommandHistory) != 0
-}
+//// Dirty if Dirty, save to file
+//func (curWorkspace *Workspace) Dirty() bool {
+//	return len(curWorkspace.UndoableCommandHistory) != 0
+//}
 
 var once sync.Once
 

@@ -23,10 +23,10 @@ func (c *Close) CallSelf() string {
 }
 
 func (curWorkspace *Workspace) Close() error {
-	if isEmpty(curWorkspace) {
+	if IsEmpty(curWorkspace) {
 		return errors.New("close: curWorkspace is nil")
 	}
-	if curWorkspace.Dirty() {
+	if curWorkspace.Dirty {
 		fmt.Println("Do you want to save the current workspace [Y\\N] ？")
 		var input string
 		for {
@@ -48,13 +48,13 @@ func (curWorkspace *Workspace) Close() error {
 		}
 	}
 
-	_, ok := allWorkspaces[curWorkspace.FileName]
+	_, ok := AllWorkspaces[curWorkspace.FileName]
 	if ok {
 		err := Log(curWorkspace)
 		if err != nil {
 			return err
 		}
-		delete(allWorkspaces, curWorkspace.FileName)
+		delete(AllWorkspaces, curWorkspace.FileName)
 		*curWorkspace = Workspace{}
 		return nil
 	}

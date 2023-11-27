@@ -17,6 +17,7 @@ import (
 func next() UndoableCommand {
 	if CurWorkspace.UndoableCommandPointer >= 0 && CurWorkspace.UndoableCommandPointer < len(CurWorkspace.UndoableCommandHistory) {
 		CurWorkspace.UndoableCommandPointer--
+		updateDirty(CurWorkspace.UndoableCommandPointer)
 		return CurWorkspace.UndoableCommandHistory[CurWorkspace.UndoableCommandPointer+1]
 	} else {
 		return nil
@@ -26,8 +27,17 @@ func next() UndoableCommand {
 func previous() UndoableCommand {
 	if CurWorkspace.UndoableCommandPointer >= -1 && CurWorkspace.UndoableCommandPointer < len(CurWorkspace.UndoableCommandHistory)-1 {
 		CurWorkspace.UndoableCommandPointer++
+		updateDirty(1)
 		return CurWorkspace.UndoableCommandHistory[CurWorkspace.UndoableCommandPointer]
 	} else {
 		return nil
+	}
+}
+
+func updateDirty(p int) {
+	if p == -1 {
+		CurWorkspace.Dirty = false
+	} else {
+		CurWorkspace.Dirty = true
 	}
 }

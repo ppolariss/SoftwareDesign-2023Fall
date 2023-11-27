@@ -1,0 +1,14 @@
+load test3.md
+insert ## 程序设计
+append-head # 我的资源
+append-tail ### 软件设计
+load test4.md
+append-head # 大学合集
+append-tail 1. 复旦大学
+append-tail 2. 上海交通大学
+close
+Y
+open test3
+list-workspace
+exit
+Y

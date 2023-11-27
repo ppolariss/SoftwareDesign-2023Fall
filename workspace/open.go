@@ -31,7 +31,7 @@ func (curWorkspace *Workspace) Open(fileName string) error {
 	if curWorkspace.FileName == fileName {
 		return nil
 	}
-	if !isEmpty(curWorkspace) {
+	if !IsEmpty(curWorkspace) {
 		updateWorkspace(curWorkspace)
 		err := Log(curWorkspace)
 		if err != nil {
@@ -39,9 +39,9 @@ func (curWorkspace *Workspace) Open(fileName string) error {
 		}
 	}
 
-	_, ok := allWorkspaces[fileName]
+	_, ok := AllWorkspaces[fileName]
 	if ok {
-		*curWorkspace = allWorkspaces[fileName]
+		*curWorkspace = AllWorkspaces[fileName]
 		return nil
 	}
 	return errors.New("open: no such file")

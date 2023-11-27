@@ -2,6 +2,7 @@ package command
 
 import (
 	"bufio"
+	"design/util"
 	"design/workspace"
 	"errors"
 	"fmt"
@@ -16,7 +17,8 @@ import (
 func init() {
 	RegisterObserver(&commandManager.RecordUndoableCommand{})
 	RegisterObserver(&log.Log{})
-	workspace.Init()
+	Deserialize()
+	_ = util.AsJson("", workspace.Path+"backup.json")
 	//RegisterObserver(&log.LogFile{})
 }
 
@@ -46,11 +48,12 @@ func Do(reader io.Reader) error {
 		if err != nil {
 			return err
 		}
+
 	}
 	if err != nil {
 		// 错误日志
 		_ = NotifyObserver(nil)
-		workspace.Serialize()
+		Serialize()
 	}
 	return err
 }
