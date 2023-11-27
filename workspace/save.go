@@ -30,8 +30,8 @@ func (curWorkspace *Workspace) Save() error {
 	}
 	//name := reflect.TypeOf(command).Elem().Name()
 	//if name == "save" || name == "load" {
-	curWorkspace.UndoableCommandHistory = curWorkspace.UndoableCommandHistory[:0]
-	curWorkspace.UndoableCommandPointer = 0
+	//curWorkspace.UndoableCommandHistory = curWorkspace.UndoableCommandHistory[:0]
+	//curWorkspace.UndoableCommandPointer = 0
 	//	return nil
 	//}
 	updateWorkspace(curWorkspace)
