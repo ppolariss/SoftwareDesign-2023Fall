@@ -32,7 +32,10 @@ func (curWorkspace *Workspace) Close() error {
 		for {
 			_, err := fmt.Scanln(&input)
 			if err != nil {
-				return errors.New(err.Error())
+				//if err.Error() == "EOF" {
+				//	continue
+				//}
+				return err
 			}
 			if input == "Y" || input == "y" {
 				err = curWorkspace.Save()

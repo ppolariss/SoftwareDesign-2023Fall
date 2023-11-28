@@ -4,7 +4,6 @@ import (
 	"design/command"
 	"fmt"
 	"os"
-	//"os"
 )
 
 func init() {
@@ -25,7 +24,7 @@ func init() {
 }
 
 func main() {
-	err := command.Do(os.Stdin)
+	err := command.Do()
 	if err != nil {
 		fmt.Println(err)
 	}

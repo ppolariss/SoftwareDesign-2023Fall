@@ -29,6 +29,7 @@ func ReadStrings(file *os.File) ([]string, error) {
 			continue
 		}
 		content = strings.TrimRight(content, "\n")
+		content = strings.TrimRight(content, "\r")
 		result = append(result, content)
 	}
 	return result, nil

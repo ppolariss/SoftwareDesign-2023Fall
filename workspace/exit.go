@@ -25,6 +25,7 @@ func (e *Exit) CallSelf() string {
 func (curWorkspace *Workspace) Exit() error {
 	updateWorkspace(curWorkspace)
 	var dirty bool
+	var saved = false
 	for _, workspace := range AllWorkspaces {
 		if workspace.Dirty {
 			dirty = true
@@ -48,6 +49,7 @@ func (curWorkspace *Workspace) Exit() error {
 						}
 					}
 				}
+				saved = true
 				break
 			} else if input == "N" || input == "n" {
 				break
@@ -68,5 +70,8 @@ func (curWorkspace *Workspace) Exit() error {
 	//*curWorkspace = Workspace{}
 
 	// exit the program
+	if saved {
+		return errors.New("exit+save")
+	}
 	return errors.New("exit")
 }

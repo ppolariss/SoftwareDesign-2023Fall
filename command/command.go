@@ -1,12 +1,9 @@
 package command
 
 import (
-	"bufio"
 	"design/util"
 	"design/workspace"
 	"errors"
-	"fmt"
-	"io"
 	"strings"
 
 	"design/commandManager"
@@ -23,25 +20,41 @@ func Init() {
 }
 
 // Do must get input outside
-func Do(reader io.Reader) error {
-	scanner := bufio.NewScanner(reader)
-	scanner.Split(bufio.ScanLines)
-
+func Do() error {
 	//reader := bufio.NewReader(os.Stdin)
 	//reader.ReadLine()
-
 	var err error
-	for scanner.Scan() {
+	//input := util.GetInput()
+	//line := range input
+	for {
+		var line string
+		line, err = util.GetInput()
+		if err != nil {
+			return err
+		}
+		if line == "" {
+			return errors.New("no command input")
+		}
 		var command Command
-		command, err = ReadCommand(scanner)
+		command, err = ReadCommand(line)
 		if err != nil || command == nil {
 			// if(str!="exit")
-			fmt.Println("invalid command")
-			break
+			//fmt.Println("invalid command")
+			return errors.New("invalid command")
 		}
 		err = command.Execute()
+
 		if err != nil {
-			break
+			if err.Error() == "exit" {
+				return NotifyObserver(command)
+			}
+			if err.Error() == "exit+save" {
+				Serialize()
+				return NotifyObserver(command)
+			}
+			// 错误日志
+			_ = NotifyObserver(nil)
+			return err
 		}
 
 		err = NotifyObserver(command)
@@ -50,24 +63,11 @@ func Do(reader io.Reader) error {
 		}
 
 	}
-	if err != nil {
-		if err.Error() == "exit" {
-			if !workspace.IsExistDirty() {
-				Serialize()
-			}
-			return nil
-		}
-		// 错误日志
-		_ = NotifyObserver(nil)
-	}
 	return err
 }
 
-func ReadCommand(scanner *bufio.Scanner) (Command, error) {
-	line := scanner.Text()
-	if err := scanner.Err(); err != nil {
-		return nil, errors.New("input error")
-	}
+func ReadCommand(line string) (Command, error) {
+
 	// parse input to args
 	splitStrings := strings.Split(line, " ")
 	args := make([]string, 0)
