@@ -2,6 +2,7 @@ package main
 
 import (
 	"design/command"
+	"design/workspace"
 	"fmt"
 	"strings"
 
@@ -27,7 +28,10 @@ func TestCommandLab2(t *testing.T) {
 		os.Stdout = oldStdout
 	}()
 	for i := 1; i <= 5; i++ {
-		command.Init()
+		err := clear()
+		if err != nil {
+			return
+		}
 		inputFile, err := os.Open("testFiles/lab2/test" + strconv.Itoa(i))
 		if err != nil {
 			t.Fatal(err)
@@ -47,7 +51,8 @@ func TestCommandLab2(t *testing.T) {
 
 		os.Stdout = tmpfile
 
-		err = command.Do(os.Stdin)
+		command.Init()
+		err = command.Do()
 		if err != nil && err.Error() != "EOF" {
 			t.Fatal(err)
 			return
@@ -57,7 +62,7 @@ func TestCommandLab2(t *testing.T) {
 		_ = inputFile.Close()
 	}
 
-	for i := 3; i <= 5; i++ {
+	for i := 1; i <= 5; i++ {
 		filePath1 := "./testFiles/lab2/result" + strconv.Itoa(i)
 		filePath2 := "./testFiles/lab2/stdresult" + strconv.Itoa(i)
 		f1, err := os.Open(filePath1)
@@ -146,7 +151,7 @@ func TestCommandLab1(t *testing.T) {
 
 		os.Stdout = tmpfile
 
-		err = command.Do(inputFile)
+		err = command.Do()
 		if err != nil {
 			return
 		}
@@ -279,5 +284,11 @@ func prepare(index int) error {
 		_ = f.Truncate(0)
 		_ = f.Close()
 	}
+	return nil
+}
+
+func clear() error {
+	workspace.CurWorkspace = &workspace.Workspace{}
+	workspace.AllWorkspaces = make(map[string]workspace.Workspace)
 	return nil
 }
