@@ -42,8 +42,14 @@ func getBareContent(s string) string {
 		return s
 	}
 	// try to parse the first word to int
+	if len(ss[0]) < 1 {
+		return s
+	}
 	_, err := strconv.Atoi(ss[0][:len(ss[0])-1])
 	if err != nil {
+		return s
+	}
+	if ss[0][len(ss[0])-1] != '.' {
 		return s
 	}
 	return strings.Join(ss[1:], " ")
