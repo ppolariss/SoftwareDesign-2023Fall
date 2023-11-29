@@ -32,10 +32,14 @@ func TestSerialize(t *testing.T) {
 	workspace.Path = "./test"
 	workspace.AllWorkspaces["1"] = ws
 	workspace.CurWorkspace = &ws
+
 	Serialize()
+
 	workspace.CurWorkspace = &workspace.Workspace{}
 	workspace.AllWorkspaces = make(map[string]workspace.Workspace)
+
 	Deserialize()
+
 	_ = util.AsJson("", workspace.Path+"backup.json")
 	assert.Equal(t, ws, *workspace.CurWorkspace)
 	assert.Equal(t, 1, len(workspace.AllWorkspaces))
