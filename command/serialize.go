@@ -30,17 +30,14 @@ func Serialize() {
 
 	//for _, workspace := range allWorkspaces {
 	jsonData, err := json.Marshal(workspace.AllWorkspaces)
-	//if len(jsonData) == 0 {
-	//	fmt.Println("JSON serialization error:", errors.New("empty json data"))
-	//}
+
 	if err != nil {
 		fmt.Println("JSON serialization error:", err)
 		return
 	}
-
-	//fmt.Println("JSON data:", string(jsonData))
-
-	//}
+	if len(jsonData) == 0 {
+		return
+	}
 	_ = util.AsJson(string(jsonData), workspace.Path+"backup.json")
 }
 
@@ -49,6 +46,10 @@ func Deserialize() {
 		return
 	}
 	f, err := os.OpenFile(workspace.Path+"backup.json", os.O_RDONLY, 0644)
+	defer func() {
+		_ = f.Close()
+	}()
+
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
 			return
@@ -108,8 +109,8 @@ func Deserialize() {
 					Content: command["Content"].(string),
 				})
 			}
-			workspace.AllWorkspaces[ws.FileName] = tmp
 		}
+		workspace.AllWorkspaces[ws.FileName] = tmp
 		for i, ws := range workspaces {
 			if i == "CurWorkspace" && ws.FileName != "" {
 				*workspace.CurWorkspace = workspace.AllWorkspaces[ws.FileName]
