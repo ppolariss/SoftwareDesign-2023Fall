@@ -15,6 +15,9 @@ type DeleteCommand struct {
 }
 
 func (c *DeleteCommand) Execute() error {
+	if workspace.CurWorkspace == nil {
+		return errors.New("delete: no workspace")
+	}
 	var err error
 	c.LineNum, c.Content, err = editor.Delete(c.LineNum, c.Content, &workspace.CurWorkspace.FileContent)
 	return err

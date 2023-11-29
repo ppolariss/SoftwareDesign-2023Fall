@@ -28,7 +28,7 @@ func TestCommandLab2(t *testing.T) {
 		os.Stdout = oldStdout
 	}()
 	for i := 1; i <= 5; i++ {
-		err := clear()
+		err := clearSpace()
 		if err != nil {
 			return
 		}
@@ -52,7 +52,7 @@ func TestCommandLab2(t *testing.T) {
 		os.Stdout = tmpfile
 
 		command.Init()
-		err = command.Do()
+		err = command.Do(os.Stdin)
 		if err != nil && err.Error() != "EOF" {
 			t.Fatal(err)
 			return
@@ -151,7 +151,7 @@ func TestCommandLab1(t *testing.T) {
 
 		os.Stdout = tmpfile
 
-		err = command.Do()
+		err = command.Do(os.Stdin)
 		if err != nil {
 			return
 		}
@@ -287,7 +287,7 @@ func prepare(index int) error {
 	return nil
 }
 
-func clear() error {
+func clearSpace() error {
 	workspace.CurWorkspace = &workspace.Workspace{}
 	workspace.AllWorkspaces = make(map[string]workspace.Workspace)
 	return nil

@@ -24,7 +24,7 @@ func init() {
 }
 
 func main() {
-	err := command.Do()
+	err := command.Do(os.Stdin)
 	if err != nil {
 		fmt.Println(err)
 	}

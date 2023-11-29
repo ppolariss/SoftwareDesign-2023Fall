@@ -1,14 +1,14 @@
 package editor
 
 import (
-	"design/util"
 	"errors"
 )
 
 func Insert(lineNum int, content string, fileContent *[]string) (int, error) {
-	if !util.IsInit() {
-		return 0, errors.New("insert: No file in workspace")
-	}
+	//if !util.IsInit() {
+	//if len(*fileContent) == 0 {
+	//	return 0, errors.New("insert: No file in workspace")
+	//}
 	if lineNum == -1 {
 		*fileContent = append(*fileContent, content)
 		return len(*fileContent), nil

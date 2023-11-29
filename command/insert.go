@@ -16,6 +16,9 @@ type InsertCommand struct {
 }
 
 func (c *InsertCommand) Execute() error {
+	if workspace.CurWorkspace == nil {
+		return errors.New("insert: no workspace")
+	}
 	var err error
 	c.LineNum, err = editor.Insert(c.LineNum, c.Content, &workspace.CurWorkspace.FileContent)
 	return err
@@ -70,6 +73,9 @@ type AppendHead struct {
 }
 
 func (c *AppendHead) Execute() error {
+	if workspace.CurWorkspace == nil {
+		return errors.New("insert: no workspace")
+	}
 	// 是否会破坏文本结构
 	// 如果破坏，在哪里报错
 
@@ -103,6 +109,9 @@ type AppendTail struct {
 }
 
 func (c *AppendTail) Execute() error {
+	if workspace.CurWorkspace == nil {
+		return errors.New("insert: no workspace")
+	}
 	c.Name = "append-tail"
 	var err error
 	c.LineNum, err = editor.Insert(-1, c.Content, &workspace.CurWorkspace.FileContent)

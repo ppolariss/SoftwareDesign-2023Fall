@@ -4,6 +4,7 @@ import (
 	"design/util"
 	"design/workspace"
 	"errors"
+	"io"
 	"strings"
 
 	"design/commandManager"
@@ -20,18 +21,11 @@ func Init() {
 }
 
 // Do must get input outside
-func Do() error {
-	//reader := bufio.NewReader(os.Stdin)
-	//reader.ReadLine()
+func Do(reader io.Reader) error {
 	var err error
-	//input := util.GetInput()
-	//line := range input
 	for {
 		var line string
-		line, err = util.GetInput()
-		if err != nil {
-			return err
-		}
+		line = util.GetInput(reader)
 		if line == "" {
 			return errors.New("no command input")
 		}
@@ -67,7 +61,6 @@ func Do() error {
 }
 
 func ReadCommand(line string) (Command, error) {
-
 	// parse input to args
 	splitStrings := strings.Split(line, " ")
 	args := make([]string, 0)
