@@ -1,6 +1,7 @@
 package workspace
 
 import (
+	"design/util"
 	"errors"
 	"fmt"
 )
@@ -30,13 +31,15 @@ func (curWorkspace *Workspace) Close() error {
 		fmt.Println("Do you want to save the current workspace [Y\\N] ？")
 		var input string
 		for {
-			_, err := fmt.Scanln(&input)
-			if err != nil {
-				//if err.Error() == "EOF" {
-				//	continue
-				//}
-				return err
-			}
+			var err error
+			input = util.GetInput()
+			//_, err := fmt.Scanln(&input)
+			//if err != nil {
+			//if err.Error() == "EOF" {
+			//	continue
+			//}
+			//return err
+			//}
 			if input == "Y" || input == "y" {
 				err = curWorkspace.Save()
 				if err != nil {

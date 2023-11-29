@@ -5,7 +5,6 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-	"sync"
 )
 
 type Node struct {
@@ -15,8 +14,7 @@ type Node struct {
 	Grade    int
 }
 
-var root *Node
-var once sync.Once
+var root *Node = &Node{Content: "root", Children: []*Node{}, parent: nil, Grade: 0}
 
 func IsInit() bool {
 	if GetRoot() == nil {
@@ -26,9 +24,9 @@ func IsInit() bool {
 }
 
 func GetRoot() *Node {
-	once.Do(func() {
-		root = &Node{Content: "root", Children: []*Node{}, parent: nil, Grade: 0}
-	})
+	//once.Do(func() {
+	//	root = &Node{Content: "root", Children: []*Node{}, parent: nil, Grade: 0}
+	//})
 	return root
 }
 

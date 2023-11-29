@@ -12,22 +12,25 @@ import (
 	"design/log"
 )
 
-func Init() {
+func Init(reader io.Reader) {
 	RegisterObserver(&commandManager.RecordUndoableCommand{})
 	RegisterObserver(&log.Log{})
 	Deserialize()
 	_ = util.AsJson("", workspace.Path+"backup.json")
+	util.SetReader(reader)
 	//RegisterObserver(&log.LogFile{})
 }
 
 // Do must get input outside
-func Do(reader io.Reader) error {
+func Do() error {
 	var err error
 	for {
 		var line string
-		line = util.GetInput(reader)
+		line = util.GetInput()
 		if line == "" {
-			return errors.New("no command input")
+			//fmt.Println("no command input")
+			return nil
+			//return errors.New("no command input")
 		}
 		var command Command
 		command, err = ReadCommand(line)
@@ -57,7 +60,7 @@ func Do(reader io.Reader) error {
 		}
 
 	}
-	return err
+	//return err
 }
 
 func ReadCommand(line string) (Command, error) {

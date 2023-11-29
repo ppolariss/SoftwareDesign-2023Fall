@@ -8,11 +8,11 @@ import (
 // var once sync.Once
 var scanner *bufio.Scanner
 
-func GetInput(r io.Reader) string {
-	once.Do(func() {
-		scanner = bufio.NewScanner(r)
+func SetReader(r io.Reader) {
+	scanner = bufio.NewScanner(r)
+}
 
-	})
+func GetInput() string {
 	for {
 		//scanner.Split(bufio.ScanLines)
 		if scanner.Scan() {

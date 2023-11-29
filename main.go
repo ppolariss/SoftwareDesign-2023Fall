@@ -20,11 +20,11 @@ func init() {
 		}
 	}
 
-	command.Init()
+	command.Init(os.Stdin)
 }
 
 func main() {
-	err := command.Do(os.Stdin)
+	err := command.Do()
 	if err != nil {
 		fmt.Println(err)
 	}

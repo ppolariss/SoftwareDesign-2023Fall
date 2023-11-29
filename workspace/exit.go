@@ -1,6 +1,7 @@
 package workspace
 
 import (
+	"design/util"
 	"errors"
 	"fmt"
 )
@@ -36,10 +37,12 @@ func (curWorkspace *Workspace) Exit() error {
 		fmt.Println("Do you want to save the unsaved workspace [Y\\N] ？")
 		var input string
 		for {
-			_, err := fmt.Scanln(&input)
-			if err != nil {
-				return errors.New(err.Error())
-			}
+			var err error
+			input = util.GetInput()
+			//_, err := fmt.Scanln(&input)
+			//if err != nil {
+			//	return errors.New(err.Error())
+			//}
 			if input == "Y" || input == "y" {
 				for _, workspace := range AllWorkspaces {
 					if workspace.Dirty {
@@ -57,6 +60,8 @@ func (curWorkspace *Workspace) Exit() error {
 				fmt.Println("Please input Y or N")
 			}
 		}
+	} else {
+		saved = true
 	}
 
 	for _, workspace := range AllWorkspaces {
