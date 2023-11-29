@@ -3,11 +3,16 @@ package util
 import (
 	"bufio"
 	"io"
+	"os"
 )
 
 var scanner *bufio.Scanner
 
 func SetReader(r io.Reader) {
+	if r == nil {
+		scanner = bufio.NewScanner(os.Stdin)
+		return
+	}
 	scanner = bufio.NewScanner(r)
 }
 

@@ -10,13 +10,10 @@ func Output(content string, file *os.File) error {
 		file = os.Stdout
 	}
 	_, err := file.WriteString(content)
-	if err != nil {
-		return errors.New(err.Error())
-	}
-	return nil
+	return err
 }
 
-// OutputAsFile para: 0: output to terminal; 1: output to file
+// AsFile  para: 0: output to terminal; 1: output to file
 func AsFile(para int, fileContent []string, filePath string) error {
 	var file *os.File
 	var err error

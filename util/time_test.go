@@ -18,3 +18,10 @@ func TestGetInterval(t *testing.T) {
 		t.Error("error")
 	}
 }
+
+func TestGetNow(t *testing.T) {
+	str := GetNow()
+	if len(str) != len(formatStr) {
+		t.Error("error")
+	}
+}

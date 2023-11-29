@@ -14,7 +14,7 @@ type Node struct {
 	Grade    int
 }
 
-var root *Node = &Node{Content: "root", Children: []*Node{}, parent: nil, Grade: 0}
+var root = &Node{Content: "root", Children: []*Node{}, parent: nil, Grade: 0}
 
 func IsInit() bool {
 	if GetRoot() == nil {
