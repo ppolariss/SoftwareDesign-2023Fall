@@ -17,10 +17,7 @@ type Node struct {
 var root = &Node{Content: "root", Children: []*Node{}, parent: nil, Grade: 0}
 
 func IsInit() bool {
-	if GetRoot() == nil {
-		return false
-	}
-	return true
+	return !(root.Children == nil || len(root.Children) == 0)
 }
 
 func GetRoot() *Node {
@@ -106,6 +103,10 @@ func traceback(currentNode *Node, newNode *Node) error {
 		// level up
 		// due to currentNode is changed, so we need to record
 		for i, times := 0, currentNode.Grade-newNode.Grade+1; i < times; i++ {
+			if currentNode == GetRoot() {
+				currentNode.Children = append(currentNode.Children, newNode)
+				return nil
+			}
 			currentNode = currentNode.parent
 			if currentNode == nil {
 				return errors.New("traceback(): currentNode.parent == nil")
@@ -120,9 +121,7 @@ func traceback(currentNode *Node, newNode *Node) error {
 
 func String2tree(ss []string) error {
 	current := GetRoot()
-	if current.Children != nil {
-		current.Children = []*Node{}
-	}
+	current.Children = []*Node{}
 
 	for _, content := range ss {
 		node, grade := ParseToNode(content)
