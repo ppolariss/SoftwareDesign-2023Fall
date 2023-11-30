@@ -48,7 +48,7 @@ func stats(status string, createAt string, fileName string) error {
 		fmt.Println(fileName + " " + interval)
 		return nil
 	}
-	f, err := os.OpenFile("./logFiles/logFile", os.O_RDWR|os.O_CREATE, 0644)
+	f, err := os.OpenFile(logFilePath, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		return nil
 	}

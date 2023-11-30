@@ -43,7 +43,13 @@ func (c *History) CallSelf() string {
 }
 
 func history(num int) error {
-	f, err := os.OpenFile("./logFiles/log/"+workspace.CurWorkspace.FileName, os.O_RDWR|os.O_CREATE, 0644)
+	var fName string
+	if workspace.CurWorkspace == nil || workspace.CurWorkspace.FileName == "" {
+		fName = "global"
+	} else {
+		fName = workspace.CurWorkspace.FileName
+	}
+	f, err := os.OpenFile(logPath+fName, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		return err
 	}

@@ -32,7 +32,8 @@ func (l *Log) Update(command Command) error {
 
 	// global variable of logger
 	// 可能要转义
-	f, err := os.OpenFile("./logFiles/log/"+fileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+
+	f, err := os.OpenFile(logPath+fileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		return errors.New("open log error")
 	}

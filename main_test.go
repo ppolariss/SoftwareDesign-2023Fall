@@ -19,9 +19,9 @@ func Test2(t *testing.T) {
 }
 
 // due to change of save function, this test is no longer valid
-func Test1(t *testing.T) {
-	testCommand(1, t)
-}
+//func Test1(t *testing.T) {
+//	testCommand(1, t)
+//}
 
 func testCommand(nLab int, t *testing.T) {
 	err := prepare(nLab)
