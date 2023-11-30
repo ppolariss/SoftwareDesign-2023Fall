@@ -8,6 +8,9 @@ import (
 )
 
 func GetInterval(nowTime string, createTime string) (string, error) {
+	if nowTime == "" || createTime == "" {
+		return "", errors.New("GetInterval: nowTime or createTime is empty")
+	}
 	nowTime = strings.TrimRight(nowTime, "\n")
 	createTime = strings.TrimRight(createTime, "\n")
 	layout := "20060102 15:04:05"

@@ -24,7 +24,8 @@ func IsEmpty(workspace *Workspace) bool {
 	if workspace == nil {
 		return true
 	}
-	if workspace.FileContent == nil || len(workspace.FileContent) == 0 {
+	if workspace.FileContent == nil {
+		//|| len(workspace.FileContent) == 0
 		return true
 	}
 	if workspace.FileName == "" {
@@ -50,6 +51,7 @@ func IsExistDirty() bool {
 var once sync.Once
 
 // Log workspace for stats
+// shouldn't throw the error
 func Log(curWorkspace *Workspace) error {
 	if curWorkspace == nil {
 		return nil
@@ -57,11 +59,13 @@ func Log(curWorkspace *Workspace) error {
 
 	interval, err := util.GetInterval(util.GetNow(), curWorkspace.CreateAt)
 	if err != nil {
-		return err
+		return nil
+		//return err
 	}
 	f, err := os.OpenFile("./logFiles/logFile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
-		return err
+		return nil
+		//return err
 	}
 
 	once.Do(func() {
